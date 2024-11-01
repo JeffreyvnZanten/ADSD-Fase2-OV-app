@@ -1,5 +1,5 @@
 import React from 'react';
-import useOvApp from './hooks/useOvApp'; // Import the custom hook
+import useOvApp from './hooks/useOvApp'; 
 
 function OVApp() {
     const {
@@ -11,12 +11,12 @@ function OVApp() {
         handleArrivalChange,
         handleGetRoute,
         handleReset
-    } = useOvApp(); // Use the custom hook
+    } = useOvApp(); 
 
     return(
-        <div>
+        <div className='box-1'>
         <h1>OV Stations Selector</h1>
-        <div>
+        <div className='downunder'>
             <label>Vertrekstation:</label>
             <select value={departureStation} onChange={handleDepartureChange}>
                 <option value="">-- Selecteer vertrekstation --</option>
@@ -27,7 +27,7 @@ function OVApp() {
                 ))}
             </select>
         </div>
-        <div>
+        <div className='downunder'>
             <label>Aankomststation:</label>
             <select value={arrivalStation} onChange={handleArrivalChange}>
                 <option value="">-- Selecteer aankomststation --</option>
@@ -38,9 +38,10 @@ function OVApp() {
                 ))}
             </select>
         </div>
-        <button onClick={handleGetRoute}>Genereer Route</button>
-        <button onClick={handleReset} style={{ marginTop: '10px', backgroundColor: 'green' }}>Reset</button>
-
+        <div className='button-wrapper'>
+         <button onClick={handleGetRoute}>Genereer Route</button>
+         <button onClick={handleReset}>Reset</button>
+        </div>
         {route && (
             <div className="route">
                 <h2>Route van {route.departure} naar {route.arrival}:</h2>
