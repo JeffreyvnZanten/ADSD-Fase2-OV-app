@@ -3,6 +3,7 @@ import useOvApp from './hooks/useOvApp';
 import StationSelector from './componenten/StationSelector';
 import RouteDescription from './componenten/RouteDescription';
 
+
 function OVApp() {
     const {
         stations,
@@ -16,7 +17,7 @@ function OVApp() {
     } = useOvApp(); 
 
     return(
-        <div>
+        <div className='box-1'>
         <h1>OV Stations Selector</h1>
         <StationSelector
                 label="Vertrekstation"
@@ -31,8 +32,10 @@ function OVApp() {
                 stations={stations}
                 onChange={handleArrivalChange}
             />
-        <button onClick={handleGetRoute}>Genereer Route</button>
-        <button onClick={handleReset} style={{ marginTop: '10px', backgroundColor: 'green' }}>Reset</button>
+        <div className='button-wrapper'>
+            <button onClick={handleGetRoute}>Genereer Route</button>
+            <button onClick={handleReset}>Reset</button>
+        </div>
 
         {route && (
             <RouteDescription route={route} />
