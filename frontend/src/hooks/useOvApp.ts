@@ -73,8 +73,8 @@ function useOvApp() {
         window.speechSynthesis.speak(utterance);
     }
 
-    // Dit zorgt ervoor dat alle data bruikbaar is in andere bestanden en geeft alle deze data mee. De variabelen en functies.
-    // dmv van = useOvApp te gebruiken
+    // Dit zorgt ervoor dat alle data bruikbaar is in andere bestanden en geeft alle deze data mee. 
+    // De variabelen en functies. dmv van = useOvApp te gebruiken
     return {
         stations,
         departureStation,
