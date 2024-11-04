@@ -16,7 +16,7 @@ export default function StationSelector({
     onChange 
 }: StationSelectorProps) {
     return (
-        <div>
+        <div className='downunder'>
             <label>{label}:</label>
             <select value={value} onChange={onChange}>
                 <option value="">-- Selecteer {label.toLowerCase()} --</option>
