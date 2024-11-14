@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Station, Route } from '../../../backend/server';
+// import { speak } from './useSpeak';
 
 function useOvApp() {
     // Alle variabelen en functies op de React manier die nodig zijn om een reisadvies te 
