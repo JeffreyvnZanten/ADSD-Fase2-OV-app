@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Station, Route } from '../../../backend/server';
-// import { speak } from './useSpeak';
+import { speak } from './useSpeak';
 
 function useOvApp() {
     // Alle variabelen en functies op de React manier die nodig zijn om een reisadvies te 
@@ -67,12 +67,12 @@ function useOvApp() {
         speak('De selectie is gereset');
     }
 
-    // functie om een string om te zetten met TTS naar spraak
-    function speak(text: string) {
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'nl-NL';
-        window.speechSynthesis.speak(utterance);
-    }
+    // // functie om een string om te zetten met TTS naar spraak
+    // function speak(text: string) {
+    //     const utterance = new SpeechSynthesisUtterance(text);
+    //     utterance.lang = 'nl-NL';
+    //     window.speechSynthesis.speak(utterance);
+    // }
 
     // Dit zorgt ervoor dat alle data bruikbaar is in andere bestanden en geeft alle deze data mee. 
     // De variabelen en functies. dmv van = useOvApp te gebruiken
