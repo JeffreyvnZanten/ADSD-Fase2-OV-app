@@ -1,12 +1,26 @@
-import React from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import useOvApp from './hooks/useOvApp'; 
 import StationSelector from './componenten/StationSelector';
 import RouteDescription from './componenten/RouteDescription';
-import { useEffect } from 'react';
 import { speak } from './hooks/useSpeak';
 import './styles/tab.css';
 
+
 function OVApp() {
+
+    const hasPlayedRef = useRef(false);
+    const intro = "Deze website is geoptimalisseerd voor blinde mensen. Je kan het volgende element selecteren met de tab-toets en teruggaan met shift-tab."
+          + "Met spatie selecteer je een element. En met f7 hoor en je deze instructies opnieuw";
+  
+    useEffect(() => {
+      if (!hasPlayedRef.current) {
+        speak(intro);
+        hasPlayedRef.current = true;
+      }
+    }, []); // Lege dependency array
+  
+
+    
     const {
         stations,
         departureStation,
@@ -17,13 +31,6 @@ function OVApp() {
         handleGetRoute,
         handleReset
     } = useOvApp(); 
-
-    const intro = "Deze website is geoptimalisseerd voor blinde mensen. Je kan het volgende element selecteren met de tab-toets en teruggaan met shift-tab."
-    + "Met enter selecteer je een element en met f7 hoor en je deze instructies opnieuw";
-
-    useEffect(() => {
-        speak(intro);
-    }, []);
 
     return(
         <div className='box-1'>
