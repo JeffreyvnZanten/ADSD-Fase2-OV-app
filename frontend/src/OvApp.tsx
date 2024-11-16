@@ -19,7 +19,7 @@ function OVApp() {
     } = useOvApp(); 
 
     const intro = "Deze website is geoptimalisseerd voor blinde mensen. Je kan het volgende element selecteren met de tab-toets en teruggaan met shift-tab."
-    + "Met spatie selecteer je een element en met f7 hoor en je deze instructies opnieuw";
+    + "Met enter selecteer je een element en met f7 hoor en je deze instructies opnieuw";
 
     useEffect(() => {
         speak(intro);
@@ -29,20 +29,20 @@ function OVApp() {
         <div className='box-1'>
         <h1>OV Stations Selector</h1>
         <StationSelector
-                label="Vertrekstation"
-                value={departureStation}
-                stations={stations}
-                onChange={handleDepartureChange}
-                tabindex={0}
-            />
+            label="Vertrekstation"
+            value={departureStation}
+            stations={stations}
+            onChange={handleDepartureChange}
+            tabindex={0}
+        />
             
-            <StationSelector
-                label="Aankomststation"
-                value={arrivalStation}
-                stations={stations}
-                onChange={handleArrivalChange}
-                tabindex={0}
-            />
+        <StationSelector
+            label="Aankomststation"
+            value={arrivalStation}
+            stations={stations}
+            onChange={handleArrivalChange}
+            tabindex={0}
+        />
         <div className='button-wrapper'>
             <button tabIndex={0} onClick={handleGetRoute}>Genereer Route</button>
             <button onClick={handleReset}>Reset</button>
