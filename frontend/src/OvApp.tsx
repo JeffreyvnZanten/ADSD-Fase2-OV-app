@@ -10,7 +10,7 @@ function OVApp() {
 
     const hasPlayedRef = useRef(false);
     const intro = "Deze website is geoptimalisseerd voor blinde mensen. Je kan het volgende element selecteren met de tab-toets en teruggaan met shift-tab."
-          + "Met spatie selecteer je een element. En met f7 hoor en je deze instructies opnieuw";
+          + "Met enter selecteer je een element. En met f7 hoor en je deze instructies opnieuw";
   
     useEffect(() => {
       if (!hasPlayedRef.current) {

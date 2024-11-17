@@ -1,6 +1,6 @@
 // StationSelector.tsx
 import React from 'react';
-import { Station } from '../../../backend/server';
+import { Station } from '../../../backend/api';
 
 interface StationSelectorProps {
     label: string;

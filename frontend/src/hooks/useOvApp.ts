@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Station, Route } from '../../../backend/server';
+import { Station, Route } from '../../../backend/api';
 import { speak } from './useSpeak';
 
 function useOvApp() {
@@ -13,10 +13,19 @@ function useOvApp() {
     // Deze callback van React haalt de data op uit de API (nu nog array)
     // en zet deze in het de stations variabele
     useEffect(() => {
+        console.log('Fetching stations...');
         fetch('http://localhost:4010/stations')
-            .then((response) => response.json())
-            .then((data: Station[]) => setStations(data))
-            .catch((error) => console.error('Error fetching stations:', error));
+            .then((response) => {
+                console.log('Response received:', response.status);
+                return response.json();
+            })
+            .then((data: Station[]) => {
+                console.log('Stations data received:', data);
+                setStations(data);
+            })
+            .catch((error) => {
+                console.error('Error fetching stations:', error);
+            });
     }, []);
 
     // Zet de gekozen string in een variable en zet die als vertrekstation
