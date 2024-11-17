@@ -1,6 +1,6 @@
 // RouteDescription.tsx
 import React from 'react';
-import { Route } from '../../../backend/api';
+import { Route } from '../../../backend/types/types';
 
 interface RouteDescriptionProps {
     route: Route | null;

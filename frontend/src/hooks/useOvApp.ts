@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Station, Route } from '../../../backend/api';
+import { Station, Route } from '../../../backend/types/types';
 import { speak } from './useSpeak';
 
 function useOvApp() {
@@ -47,18 +47,15 @@ function useOvApp() {
     // Als het vertrek en aankomst station zijn gekozen haalt de app de data op uit de API
     // Vervolgens wordt de route geupdate met de useState callback van route, wat ervoor zorgt dat
     //  de data wordt getoond in de UI element
+    // In useOvApp.ts
     function handleGetRoute() {
         if (departureStation && arrivalStation) {
-            fetch('http://localhost:4010/route', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    departureStation: departureStation,
-                    arrivalStation: arrivalStation
-                })
-            })
+            const queryParams = new URLSearchParams({
+                departureStation: departureStation,
+                arrivalStation: arrivalStation
+            });
+
+            fetch(`http://localhost:4010/route?${queryParams}`)
                 .then((response) => response.json())
                 .then((data: Route) => {
                     setRoute(data);
