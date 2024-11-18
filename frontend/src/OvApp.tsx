@@ -8,18 +8,7 @@ import './styles/tab.css';
 
 function OVApp() {
 
-    const hasPlayedRef = useRef(false);
-    const intro = "Deze website is geoptimalisseerd voor blinde mensen. Je kan het volgende element selecteren met de tab-toets en teruggaan met shift-tab."
-          + "Met enter selecteer je een element. En met f7 hoor en je deze instructies opnieuw";
-  
-    useEffect(() => {
-      if (!hasPlayedRef.current) {
-        speak(intro);
-        hasPlayedRef.current = true;
-      }
-    }, []); // Lege dependency array
-  
-
+    const intro = "Deze website is geoptimalisseerd voor blinde mensen. Je kan het volgende element selecteren met de tab-toets en teruggaan met shift-tab.   Met enter of spatie activeer je een element.";
     
     const {
         stations,
@@ -32,8 +21,12 @@ function OVApp() {
         handleReset
     } = useOvApp(); 
 
-    return(
+    return(   
         <div className='box-1'>
+        <button id="uitleg" aria-label="Uitleg voor blinden" onClick={() => speak(intro)}>
+            Uitleg voor blinden
+        </button>
+
         <h1>OV Stations Selector</h1>
         <StationSelector
             label="Vertrekstation"
