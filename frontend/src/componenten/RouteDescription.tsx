@@ -1,13 +1,13 @@
 // RouteDescription.tsx
 import React from 'react';
-import { Route } from '../../../backend/types/types';
+import { Route } from '../../../backend/types';
 
 interface RouteDescriptionProps {
     route: Route | null;
 }
 
 export default function RouteDescription({ route }: RouteDescriptionProps) {
-    if (!route) return null;
+    if (!route || !route.steps) return null;
 
     return (
         <div className="route">

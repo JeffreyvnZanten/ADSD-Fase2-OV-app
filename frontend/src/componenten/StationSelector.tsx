@@ -1,6 +1,6 @@
 // StationSelector.tsx
 import React from 'react';
-import { Station } from '../../../backend/types/types';
+import { Station } from '../../../backend/types';
 
 interface StationSelectorProps {
     label: string;
@@ -23,8 +23,8 @@ export default function StationSelector({
             <select tabIndex={tabindex} value={value} onChange={onChange}>
                 <option value="">-- Selecteer {label.toLowerCase()} --</option>
                 {stations.map((station) => (
-                    <option key={station.id} value={station.name}>
-                        {station.name}
+                    <option key={station.id} value={station.city}>
+                        {station.city}
                     </option>
                 ))}
             </select>

@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Station, Route } from '../../../backend/types/types';
+import { Station, Route } from '../../../backend/types';
 import { speak } from './useSpeak';
+
+const API_BASE_URL = 'http://localhost:4010/api';
 
 function useOvApp() {
     // Alle variabelen en functies op de React manier die nodig zijn om een reisadvies te 
@@ -14,7 +16,7 @@ function useOvApp() {
     // en zet deze in het de stations variabele
     useEffect(() => {
         console.log('Fetching stations...');
-        fetch('http://localhost:4010/stations')
+        fetch(`${API_BASE_URL}/stations`)
             .then((response) => {
                 console.log('Response received:', response.status);
                 return response.json();
@@ -31,40 +33,51 @@ function useOvApp() {
     // Zet de gekozen string in een variable en zet die als vertrekstation
     // Gebruik de TTS met het geselecteerde station
     function handleDepartureChange(event: { target: { value: string } }) {
-        const selectedStation = event.target.value;
-        setDepartureStation(selectedStation);
-        speak(`Vertrekstation is ingesteld op ${selectedStation}`);
+        const selectedCity = event.target.value;
+        setDepartureStation(selectedCity);
+        speak(`Vertrekstation is ingesteld op ${selectedCity}`);
     }
     
     // Zet de gekozen string in een variable en zet die als aankomststation
     // Gebruik de TTS met het geselecteerde station
     function handleArrivalChange(event: { target: { value: string } }) {
-        const selectedStation = event.target.value;
-        setArrivalStation(selectedStation);
-        speak(`Aankomststation is ingesteld op ${selectedStation}`);
+        const selectedCity = event.target.value;
+        setArrivalStation(selectedCity);
+        speak(`Aankomststation is ingesteld op ${selectedCity}`);
     }
 
     // Als het vertrek en aankomst station zijn gekozen haalt de app de data op uit de API
     // Vervolgens wordt de route geupdate met de useState callback van route, wat ervoor zorgt dat
     //  de data wordt getoond in de UI element
     // In useOvApp.ts
-    function handleGetRoute() {
-        if (departureStation && arrivalStation) {
-            const queryParams = new URLSearchParams({
-                departureStation: departureStation,
-                arrivalStation: arrivalStation
-            });
-
-            fetch(`http://localhost:4010/route?${queryParams}`)
-                .then((response) => response.json())
-                .then((data: Route) => {
-                    setRoute(data);
-                    speak(`De route van ${data.departure} naar ${data.arrival} is gegenereerd. ${data.steps.join(', ')}`);
-                })
-                .catch((error) => console.error('Error fetching route:', error));
+    const handleGetRoute = async () => {
+        if (!departureStation || !arrivalStation) {
+            speak('Selecteer eerst een vertrek- en aankomststad');
+            return;
         }
-    }
-
+     
+        try {
+            const queryParams = new URLSearchParams({
+                departureStation,
+                arrivalStation
+            });
+     
+            const response = await fetch(`${API_BASE_URL}/route?${queryParams}`);
+            
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Route kon niet worden opgehaald');
+            }
+     
+            const data: Route = await response.json();
+            setRoute(data);
+            speak(`De route van ${data.departure} naar ${data.arrival} is gegenereerd. ${data.steps.join(', ')}`);
+        } catch (error) {
+            console.error('Error fetching route:', error);
+            speak('Er is een fout opgetreden bij het ophalen van de route. Controleer of je geldige steden hebt geselecteerd.');
+            setRoute(null);
+        }
+     };
     // functie om de velden te resetten naar de standaard waardes
     function handleReset() {
         setDepartureStation('');

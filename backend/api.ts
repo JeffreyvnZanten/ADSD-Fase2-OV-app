@@ -1,43 +1,66 @@
 // api.ts
 import express, { Request, Response } from 'express';
-import cors from 'cors';
-import { getStations } from './database/db';
-import { generateRoute } from './services/routeService';
+import { Database } from 'sqlite3';
+import { Station, Route, ApiError, RouteRequest } from './types';
+import { stationService } from './services/stationService';
+import { routeService } from './services/routeService';
 
-const app = express();
-app.use(cors());
-app.use(express.json());
+export const createApi = (db: Database) => {
+    const router = express.Router();
 
-app.get('/stations', async (req: Request, res: Response) => {
-    try {
-        const stations = await getStations();
-        console.log('Number of stations:', stations.length);
-        res.json(stations);
-    } catch (error) {
-        console.error('Database error:', error);
-        res.status(500).json({ error: 'Error fetching stations from database' });
-    }
-});
-
-app.get('/route', async (req: Request, res: Response) => {
-    try {
-        const departureStation = req.query.departureStation as string;
-        const arrivalStation = req.query.arrivalStation as string;
-
-        if (!departureStation || !arrivalStation) {
-            return res.status(400).json({ error: 'Vertrek- en aankomststation zijn verplicht.' });
+    router.get('/stations', async (_req: Request, res: Response<Station[] | ApiError>) => {
+        try {
+            const stations = await stationService.getAllStations(db);
+            res.json(stations);
+        } catch (error) {
+            res.status(500).json({ error: 'Failed to fetch stations' });
         }
+    });
 
-        const route = await generateRoute(departureStation, arrivalStation);
-        res.json(route);
-    } catch (error) {
-        console.error('Route generation error:', error);
-        res.status(500).json({ error: error instanceof Error ? error.message : 'Er is een fout opgetreden bij het genereren van de route.' });
-    }
-});
+    router.get('/stations/:city', async (req: Request, res: Response<Station[] | ApiError>) => {
+        try {
+            const stations = await stationService.getStationsByCity(db, req.params.city);
+            if (stations.length === 0) {
+                res.status(404).json({ error: 'No stations found for this city' });
+                return;
+            }
+            res.json(stations);
+        } catch (error) {
+            res.status(500).json({ error: 'Failed to fetch stations' });
+        }
+    });
 
-const PORT: number = 4010;
+    router.get('/route', async (
+        req: Request<{}, {}, {}, RouteRequest>, 
+        res: Response<Route | ApiError>
+    ) => {
+        const { departureStation, arrivalStation } = req.query;
+    
+        if (!departureStation || !arrivalStation) {
+            res.status(400).json({ 
+                error: 'Missing departure or arrival city' 
+            });
+            return;
+        }
+    
+        try {
+            const route = await routeService.calculateRoute(db, {
+                departureStation,
+                arrivalStation
+            });
+    
+            if (!route) {
+                res.status(404).json({ 
+                    error: 'Could not find route between cities' 
+                });
+                return;
+            }
+    
+            res.json(route);
+        } catch (error) {
+            res.status(500).json({ error: 'Failed to calculate route' });
+        }
+    });
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+    return router;
+};

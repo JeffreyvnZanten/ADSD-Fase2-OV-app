@@ -6,7 +6,7 @@
   "scripts": {
     "start:frontend": "webpack serve --mode development",
     "build:frontend": "webpack --mode production",
-    "start:backend": "ts-node backend/api.ts",
+    "start:backend": "ts-node backend/index.ts",
     "dev": "concurrently \"npm run start:frontend\" \"npm run start:backend\""
   },
   "keywords": [],
