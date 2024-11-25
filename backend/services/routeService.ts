@@ -1,14 +1,25 @@
+/**
+ * Service layer for route calculation operations
+ * Handles business logic for generating travel routes between stations
+ */
+
 import { Database } from 'sqlite3';
 import { Route, RouteRequest } from '../types';
 import { ovRepository } from '../ovRepository';
 
 export const routeService = {
+    /**
+     * Calculates a route between two stations
+     * @param {Database} db - SQLite database connection
+     * @param {RouteRequest} request - Contains departure and arrival station information
+     * @returns {Promise<Route | null>} Calculated route or null if no route found
+     * @throws {Error} If stations are invalid or calculation fails
+     */
     calculateRoute: async (
         db: Database,
         request: RouteRequest
     ): Promise<Route | null> => {
         try {
-            // Zoek stations op basis van stadsnaam
             const departureStations = await ovRepository.getStationByCity(
                 db,
                 request.departureStation
@@ -18,7 +29,6 @@ export const routeService = {
                 request.arrivalStation
             );
 
-            // Validatie checks
             if (!departureStations.length || !arrivalStations.length) {
                 throw new Error('Beide stations moeten geldig zijn.');
             }
@@ -26,13 +36,11 @@ export const routeService = {
             const departure = departureStations[0];
             const arrival = arrivalStations[0];
 
-            // Check of stations verschillend zijn
             if (departure.city === arrival.city) {
                 throw new Error('Vertrek- en aankomststation moeten verschillend zijn.');
             }
 
-            // Maak route met de correcte instructies
-            const route: Route = {
+            return {
                 departure: departure.name,
                 arrival: arrival.name,
                 steps: [
@@ -41,8 +49,6 @@ export const routeService = {
                     `Bij aankomst op ${arrival.name}, ga naar de ${arrival.exit} om het station te verlaten.`
                 ]
             };
-
-            return route;
 
         } catch (error) {
             console.error('Error in calculateRoute:', error);
