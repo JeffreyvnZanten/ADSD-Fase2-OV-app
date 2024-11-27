@@ -41,15 +41,18 @@ function OVApp() {
     // Get all state and handlers from our custom hook
     const {
         stations,          // List of all available stations
-        departureStation,  // Currently selected departure station
-        arrivalStation,   // Currently selected arrival station
         route,            // Current route (if calculated)
-        handleDepartureChange,  // Handler for departure selection
-        handleArrivalChange,    // Handler for arrival selection
         handleGetRoute,         // Handler for route generation
         handleReset            // Handler for form reset
     } = useOvApp(); 
-    
+
+    // State variables for departure and arrival stations and their suggestions
+    const [departureStation, setDepartureStation] = useState('');
+    const [arrivalStation, setArrivalStation] = useState('');
+    const [departureSuggestions, setDepartureSuggestions] = useState([]);
+    const [arrivalSuggestions, setArrivalSuggestions] = useState([]);   
+
+
     // Ref to track if intro audio has been played
     const hasPlayedRef = useRef(false);
     
@@ -66,35 +69,97 @@ function OVApp() {
         }
     }, []); // Empty dependency array means this runs once on mount
 
+    // Handler for departure station input change
+    const handleDepartureChange = (event) => {
+        const inputValue = event.target.value;
+        setDepartureStation(inputValue);
+
+        // Filter stations based on input
+        const filteredStations = stations.filter(station =>
+            station.toLowerCase().includes(inputValue.toLowerCase())
+        );
+        setDepartureSuggestions(filteredStations);
+    };
+
+    // Handler for arrival station input change
+    const handleArrivalChange = (event) => {
+        const inputValue = event.target.value;
+        setArrivalStation(inputValue);
+
+        // Filter stations based on input
+        const filteredStations = stations.filter(station =>
+            station.toLowerCase().includes(inputValue.toLowerCase())
+        );
+        setArrivalSuggestions(filteredStations);
+    };
+
+    // Handler for clicking a departure suggestion
+    const handleDepartureSuggestionClick = (station) => {
+        setDepartureStation(station);
+        setDepartureSuggestions([]); // Clear suggestions
+    };
+
+    // Handler for clicking an arrival suggestion
+    const handleArrivalSuggestionClick = (station) => {
+        setArrivalStation(station);
+        setArrivalSuggestions([]); // Clear suggestions
+    };
+
     return (
         <div className='box-1'>
             {/* Main application title */}
             <h1>OV Stations Selector</h1>
 
-            {/* Departure station dropdown */}
-            <StationSelector
-                label="Vertrekstation"
-                value={departureStation}
-                stations={stations}
-                onChange={handleDepartureChange}
-                tabindex={0}
-            />
-            
-            {/* Arrival station dropdown */}
-            <StationSelector
-                label="Aankomststation"
-                value={arrivalStation}
-                stations={stations}
-                onChange={handleArrivalChange}
-                tabindex={0}
-            />
+            {/* Departure station input with suggestions */}
+            <div>
+                <label htmlFor="departure">Vertrekstation:</label>
+                <input 
+                    type="text" 
+                    id="departure" 
+                    value={departureStation} 
+                    onChange={handleDepartureChange} 
+                    tabIndex={0} 
+                />
+                <ul>
+                    {departureSuggestions.map(station => (
+                        <li 
+                            key={station} 
+                            onClick={() => handleDepartureSuggestionClick(station)}
+                        >
+                            {station}
+                        </li>
+                    ))}
+                </ul>
+            </div>
+
+            {/* Arrival station input with suggestions */}
+            <div>
+                <label htmlFor="arrival">Aankomststation:</label>
+                <input 
+                    type="text" 
+                    id="arrival" 
+                    value={arrivalStation} 
+                    onChange={handleArrivalChange} 
+                    tabIndex={0} 
+                />
+                <ul>
+                    {arrivalSuggestions.map(station => (
+                        <li 
+                            key={station} 
+                            onClick={() => handleArrivalSuggestionClick(station)}
+                        >
+                            {station}
+                        </li>
+                    ))}
+                </ul>
+            </div>
 
             {/* Action buttons container */}
             <div className='button-wrapper'>
                 {/* Generate route button */}
                 <button 
                     tabIndex={0} 
-                    onClick={handleGetRoute}
+                    onClick={() => handleGetRoute(departureStation, arrivalStation)} 
                 >
                     Genereer Route
                 </button>
