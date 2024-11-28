@@ -19,14 +19,14 @@
  * - Route Description (when available)
  */
 
-import React, { useRef, useEffect } from 'react';
+import React, { useState ,useRef, useEffect } from 'react';
 import useOvApp from './hooks/useOvApp'; 
 import StationSelector from './componenten/StationSelector';
 import RouteDescription from './componenten/RouteDescription';
-import RouteDisplay from './componenten/RouteDisplay';
-import ErrorDisplay from './componenten/ErrorDisplay';
 import { speak } from './hooks/useSpeak';
 import './styles/tab.css';
+import RouteDisplay from './componenten/RouteDisplay';
+import ErrorDisplay from './componenten/ErrorDisplay';
 
 /**
  * Main Application Component
@@ -57,9 +57,7 @@ function OVApp() {
     const hasPlayedRef = useRef(false);
     
     // Accessibility introduction message
-    const intro = "Deze website is geoptimaliseerd voor blinde mensen. "
-        + "Je kan het volgende element selecteren met de tab-toets en teruggaan met shift-tab. "
-        + "Met enter selecteer je een element. En met f7 hoor je deze instructies opnieuw.";
+    const intro = "Deze website is geoptimaliseerd voor blinde mensen.   Je kan het volgende element selecteren met de tab-toets en teruggaan met shift-tab.   Met enter selecteer je een element. En met f7 hoor je deze instructies opnieuw.";
   
     // Play introduction audio once when component mounts
     useEffect(() => {
@@ -72,7 +70,7 @@ function OVApp() {
     return (
         <div className='box-1'>
             {/* Main application title */}
-            <h1>OV Stations Selector</h1>
+            <h1   tabIndex={1} aria-label='"Deze website is geoptimaliseerd voor blinde mensen. Je kan het volgende element selecteren met de tab-toets en teruggaan met shift-tab.   Met enter selecteer je een element. En met f7 hoor je deze instructies opnieuw.";'>OV Stations Selector</h1>
 
             {/* Departure station dropdown */}
             <StationSelector
@@ -108,15 +106,11 @@ function OVApp() {
                 </button>
             </div>
 
-            {/* Only show ErrorDisplay when there is an error */}
-            {error && (
-                <ErrorDisplay message={error} />
-            )}
+            {/* Conditional rendering of route information */}
+            {error && <ErrorDisplay message={error} />}
 
-            {/* Only show RouteDisplay when there is a route */}
-            {route && (
-                <RouteDisplay route={route} />
-            )}
+            {/* Conditional rendering of route information */}
+            {route && <RouteDisplay route={route} />}
         </div>
     );
 }
