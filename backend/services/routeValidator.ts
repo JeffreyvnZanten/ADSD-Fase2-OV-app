@@ -12,6 +12,8 @@ export class ValidationError extends Error {
      */
     constructor(message: string) {
         super(message);
+        // This is needed to make the testing work
+        Object.setPrototypeOf(this, ValidationError.prototype);
         this.name = 'ValidationError';
     }
  }
