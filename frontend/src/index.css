@@ -61,3 +61,8 @@ code {
 option{
   font-size: 18px;
 }
+
+button:focus {
+  background-color: #e0e0e0;
+  outline: 2px solid blue;
+}

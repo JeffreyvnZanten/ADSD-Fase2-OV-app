@@ -1,57 +1,116 @@
-import React from 'react';
+/**
+ * Main OV (Public Transport) Application Component
+ * 
+ * This is the top-level component that combines all other components and functionality.
+ * It provides a user interface for selecting stations and viewing travel routes,
+ * with special focus on accessibility for visually impaired users.
+ * 
+ * Key Concepts:
+ * - Custom Hooks: Uses useOvApp for state management
+ * - Accessibility: Built-in screen reader support
+ * - Component Composition: Combines multiple smaller components
+ * - useRef & useEffect: For managing one-time audio introduction
+ * 
+ * Component Structure:
+ * - Header
+ * - Departure Station Selector
+ * - Arrival Station Selector
+ * - Action Buttons (Generate Route & Reset)
+ * - Route Description (when available)
+ */
+
+import React, { useState ,useRef, useEffect } from 'react';
 import useOvApp from './hooks/useOvApp'; 
+import StationSelector from './componenten/StationSelector';
+import RouteDescription from './componenten/RouteDescription';
+import { speak } from './hooks/useSpeak';
+import './styles/tab.css';
+import RouteDisplay from './componenten/RouteDisplay';
+import ErrorDisplay from './componenten/ErrorDisplay';
 
+/**
+ * Main Application Component
+ * 
+ * @returns {JSX.Element} The complete OV application interface
+ * 
+ * Implementation Details:
+ * 1. Uses useOvApp hook for all state management and handlers
+ * 2. Plays introduction audio for first-time visitors
+ * 3. Renders station selectors and route information
+ * 4. Provides keyboard navigation support
+ */
 function OVApp() {
+    // Get all state and handlers from our custom hook
     const {
-        stations,
-        departureStation,
-        arrivalStation,
-        route,
-        handleDepartureChange,
-        handleArrivalChange,
-        handleGetRoute,
-        handleReset
+        stations,          // List of all available stations
+        departureStation,  // Currently selected departure station
+        arrivalStation,   // Currently selected arrival station
+        route,            // Current route (if calculated)
+        error,
+        handleDepartureChange,  // Handler for departure selection
+        handleArrivalChange,    // Handler for arrival selection
+        handleGetRoute,         // Handler for route generation
+        handleReset            // Handler for form reset
     } = useOvApp(); 
+    
+    // Ref to track if intro audio has been played
+    const hasPlayedRef = useRef(false);
+    
+    // Accessibility introduction message
+    const intro = "Deze website is geoptimaliseerd voor blinde mensen.   Je kan het volgende element selecteren met de tab-toets en teruggaan met shift-tab.   Met enter selecteer je een element. En met f7 hoor je deze instructies opnieuw.";
+  
+    // Play introduction audio once when component mounts
+    useEffect(() => {
+        if (!hasPlayedRef.current) {
+            // speak(intro);
+            hasPlayedRef.current = true;
+        }
+    }, []); // Empty dependency array means this runs once on mount
 
-    return(
+    return (
         <div className='box-1'>
-        <h1>OV Stations Selector</h1>
-        <div className='downunder'>
-            <label>Vertrekstation:</label>
-            <select value={departureStation} onChange={handleDepartureChange}>
-                <option value="">-- Selecteer vertrekstation --</option>
-                {stations.map((station) => (
-                    <option key={station.id} value={station.name}>
-                        {station.name}
-                    </option>
-                ))}
-            </select>
-        </div>
-        <div className='downunder'>
-            <label>Aankomststation:</label>
-            <select value={arrivalStation} onChange={handleArrivalChange}>
-                <option value="">-- Selecteer aankomststation --</option>
-                {stations.map((station) => (
-                    <option key={station.id} value={station.name}>
-                        {station.name}
-                    </option>
-                ))}
-            </select>
-        </div>
-        <div className='button-wrapper'>
-         <button onClick={handleGetRoute}>Genereer Route</button>
-         <button onClick={handleReset}>Reset</button>
-        </div>
-        {route && (
-            <div className="route">
-                <h2>Route van {route.departure} naar {route.arrival}:</h2>
-                <ol>
-                    {route.steps.map((step, index) => (
-                        <li key={index}>{step}</li>
-                    ))}
-                </ol>
+            {/* Main application title */}
+            <h1   tabIndex={1} aria-label='"Deze website is geoptimaliseerd voor blinde mensen. Je kan het volgende element selecteren met de tab-toets en teruggaan met shift-tab.   Met enter selecteer je een element. En met f7 hoor je deze instructies opnieuw.";'>OV Stations Selector</h1>
+
+            {/* Departure station dropdown */}
+            <StationSelector
+                label="Vertrekstation"
+                value={departureStation}
+                stations={stations}
+                onChange={handleDepartureChange}
+                tabindex={0}
+            />
+            
+            {/* Arrival station dropdown */}
+            <StationSelector
+                label="Aankomststation"
+                value={arrivalStation}
+                stations={stations}
+                onChange={handleArrivalChange}
+                tabindex={0}
+            />
+
+            {/* Action buttons container */}
+            <div className='button-wrapper'>
+                {/* Generate route button */}
+                <button 
+                    tabIndex={0} 
+                    onClick={handleGetRoute}
+                >
+                    Genereer Route
+                </button>
+
+                {/* Reset form button */}
+                <button onClick={handleReset}>
+                    Reset
+                </button>
             </div>
-        )}
+
+            {/* Conditional rendering of route information */}
+            {error && <ErrorDisplay message={error} />}
+
+            {/* Conditional rendering of route information */}
+            {route && <RouteDisplay route={route} />}
         </div>
     );
 }
