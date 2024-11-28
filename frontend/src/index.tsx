@@ -15,7 +15,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
 import OVApp from './OvApp';
 
 // Find the root element in index.html where React will render

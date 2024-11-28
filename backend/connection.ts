@@ -98,8 +98,9 @@ const checkTableExists = (db: Database): Promise<boolean> =>
  */
 const executeSchema = (db: Database): Promise<void> =>
     new Promise((resolve, reject) => {
+        const schemaPath = path.join(__dirname, 'schema.sql');
         db.exec(
-            readFileSync('schema.sql', 'utf-8'),
+            readFileSync(schemaPath, 'utf-8'),
             err => err ? reject(err) : resolve()
         );
     });
