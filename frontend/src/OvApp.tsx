@@ -25,6 +25,8 @@ import StationSelector from './componenten/StationSelector';
 import RouteDescription from './componenten/RouteDescription';
 import { speak } from './hooks/useSpeak';
 import './styles/tab.css';
+import RouteDisplay from './componenten/RouteDisplay';
+import ErrorDisplay from './componenten/ErrorDisplay';
 
 /**
  * Main Application Component
@@ -44,6 +46,7 @@ function OVApp() {
         departureStation,  // Currently selected departure station
         arrivalStation,   // Currently selected arrival station
         route,            // Current route (if calculated)
+        error,
         handleDepartureChange,  // Handler for departure selection
         handleArrivalChange,    // Handler for arrival selection
         handleGetRoute,         // Handler for route generation
@@ -104,7 +107,10 @@ function OVApp() {
             </div>
 
             {/* Conditional rendering of route information */}
-            {route && <RouteDescription route={route} />}
+            {error && <ErrorDisplay message={error} />}
+
+            {/* Conditional rendering of route information */}
+            {route && <RouteDisplay route={route} />}
         </div>
     );
 }
