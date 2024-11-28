@@ -1,5 +1,6 @@
 // services/routeValidator.ts
 import { RouteRequest } from '../types';
+import { Station } from '../types';
 
 /**
 * Custom error class for route validation failures
@@ -43,12 +44,23 @@ export class ValidationError extends Error {
  * });
  * ```
  */
- export function validateRouteRequest(request: RouteRequest): void {
+ export function validateRouteRequest(
+    request: RouteRequest,
+    departureStations: Station[],
+    arrivalStations: Station[]
+): void {
+    // Check if stations are provided
     if (!request.departureStation || !request.arrivalStation) {
         throw new ValidationError('Selecteer eerst een vertrek- en aankomststation');
     }
- 
+
+    // Check if stations are the same
     if (request.departureStation === request.arrivalStation) {
         throw new ValidationError('Het vertrek- en aankomststation kunnen niet hetzelfde zijn');
     }
- }
+
+    // Check if stations exist in database
+    if (!departureStations.length || !arrivalStations.length) {
+        throw new ValidationError('Selecteer eerst een vertrek- en aankomststation');
+    }
+}

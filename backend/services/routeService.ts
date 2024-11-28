@@ -54,9 +54,6 @@ export const routeService = {
         db: Database,
         request: RouteRequest
     ): Promise<Route> => {
-        // Validate request parameters
-        validateRouteRequest(request);
-
         // Fetch station information from database
         const departureStations = await ovRepository.getStationByCity(
             db,
@@ -67,10 +64,8 @@ export const routeService = {
             request.arrivalStation
         );
 
-        // Verify both stations exist in database
-        if (!departureStations.length || !arrivalStations.length) {
-            throw new RouteNotFoundError('Beide stations moeten geldig zijn.');
-        }
+        // Validate request parameters including station existence
+        validateRouteRequest(request, departureStations, arrivalStations);
 
         const departure = departureStations[0];
         const arrival = arrivalStations[0];
