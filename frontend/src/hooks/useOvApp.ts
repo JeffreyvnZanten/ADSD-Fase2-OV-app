@@ -14,14 +14,16 @@ const API_BASE_URL = 'http://localhost:4010/api';
  * @returns {Object} Object containing state and handler functions
  */
 function useOvApp() {
-    /** State for storing all available stations */
+    // State for storing all available stations 
     const [stations, setStations] = useState<Station[]>([]);
-    /** State for storing selected departure station */
+    // State for storing selected departure station 
     const [departureStation, setDepartureStation] = useState('');
-    /** State for storing selected arrival station */
+    // State for storing selected arrival station 
     const [arrivalStation, setArrivalStation] = useState('');
-    /** State for storing calculated route */
+    // State for storing calculated route 
     const [route, setRoute] = useState<Route | null>(null);
+    // 
+    const [error, setError] = useState<string | null>(null);
 
     /** Fetch all stations on component mount */
     useEffect(() => {
@@ -47,7 +49,7 @@ function useOvApp() {
     function handleDepartureChange(event: { target: { value: string } }) {
         const selectedCity = event.target.value;
         setDepartureStation(selectedCity);
-        speak(`Vertrekstation is ingesteld op ${selectedCity}`);
+        //speak(`Vertrekstation is ingesteld op ${selectedCity}`);
     }
     
     /**
@@ -57,19 +59,24 @@ function useOvApp() {
     function handleArrivalChange(event: { target: { value: string } }) {
         const selectedCity = event.target.value;
         setArrivalStation(selectedCity);
-        speak(`Aankomststation is ingesteld op ${selectedCity}`);
+        //speak(`Aankomststation is ingesteld op ${selectedCity}`);
     }
 
     /**
-     * Handles route generation request
-     * Fetches and sets the route between selected stations
+     * Fetches a route between selected stations and updates application state
+     * 
+     * Makes an API call to retrieve route information based on departure and arrival stations.
+     * Handles success by updating route state and error cases by setting appropriate error messages.
+     * 
+     * @async
+     * @function handleGetRoute
+     * @throws {Error} When API request fails or returns an error response
+     * 
      */
     const handleGetRoute = async () => {
-        if (!departureStation || !arrivalStation) {
-            speak('Selecteer eerst een vertrek- en aankomststad');
-            return;
-        }
-     
+        setError(null);
+        handleReset();
+    
         try {
             const queryParams = new URLSearchParams({
                 departureStation,
@@ -85,10 +92,9 @@ function useOvApp() {
      
             const data: Route = await response.json();
             setRoute(data);
-            speak(`De route van ${data.departure} naar ${data.arrival} is gegenereerd. ${data.steps.join(', ')}`);
         } catch (error) {
             console.error('Error fetching route:', error);
-            speak('Er is een fout opgetreden bij het ophalen van de route. Controleer of je geldige steden hebt geselecteerd.');
+            setError('Er is een fout opgetreden bij het ophalen van de route');
             setRoute(null);
         }
     };
@@ -99,8 +105,8 @@ function useOvApp() {
     function handleReset() {
         setDepartureStation('');
         setArrivalStation('');
+        setError(null);
         setRoute(null);
-        speak('De selectie is gereset');
     }
 
     return {
@@ -111,7 +117,8 @@ function useOvApp() {
         handleDepartureChange,
         handleArrivalChange,
         handleGetRoute,
-        handleReset
+        handleReset,
+        error
     };
 }
 

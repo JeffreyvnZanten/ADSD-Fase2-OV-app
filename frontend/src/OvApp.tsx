@@ -23,6 +23,8 @@ import React, { useRef, useEffect } from 'react';
 import useOvApp from './hooks/useOvApp'; 
 import StationSelector from './componenten/StationSelector';
 import RouteDescription from './componenten/RouteDescription';
+import RouteDisplay from './componenten/RouteDisplay';
+import ErrorDisplay from './componenten/ErrorDisplay';
 import { speak } from './hooks/useSpeak';
 import './styles/tab.css';
 
@@ -44,6 +46,7 @@ function OVApp() {
         departureStation,  // Currently selected departure station
         arrivalStation,   // Currently selected arrival station
         route,            // Current route (if calculated)
+        error,
         handleDepartureChange,  // Handler for departure selection
         handleArrivalChange,    // Handler for arrival selection
         handleGetRoute,         // Handler for route generation
@@ -61,7 +64,7 @@ function OVApp() {
     // Play introduction audio once when component mounts
     useEffect(() => {
         if (!hasPlayedRef.current) {
-            speak(intro);
+            // speak(intro);
             hasPlayedRef.current = true;
         }
     }, []); // Empty dependency array means this runs once on mount
@@ -105,8 +108,15 @@ function OVApp() {
                 </button>
             </div>
 
-            {/* Conditional rendering of route information */}
-            {route && <RouteDescription route={route} />}
+            {/* Only show ErrorDisplay when there is an error */}
+            {error && (
+                <ErrorDisplay message={error} />
+            )}
+
+            {/* Only show RouteDisplay when there is a route */}
+            {route && (
+                <RouteDisplay route={route} />
+            )}
         </div>
     );
 }
