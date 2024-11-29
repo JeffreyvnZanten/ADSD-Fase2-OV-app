@@ -1,10 +1,11 @@
+// routeService.ts
 /**
  * Service layer for route calculation operations
  * Handles business logic for generating travel routes between stations
  */
 
 import { Database } from 'sqlite3';
-import { Route, RouteRequest } from '../types';
+import { Route, RouteRequest, Station } from '../types';
 import { ovRepository } from '../ovRepository';
 import { validateRouteRequest } from './routeValidator';
 
@@ -41,44 +42,38 @@ export const routeService = {
      * @returns Promise resolving to a Route object with step-by-step instructions
      * @throws {ValidationError} When request validation fails
      * @throws {RouteNotFoundError} When stations cannot be found or no route exists
-     * 
-     * @example
-     * ```typescript
-     * const route = await routeService.calculateRoute(db, {
-     *   departureStation: "Amsterdam",
-     *   arrivalStation: "Rotterdam"
-     * });
-     * ```
      */
     calculateRoute: async (
         db: Database,
         request: RouteRequest
     ): Promise<Route> => {
         // Fetch station information from database
-        const departureStations = await ovRepository.getStationByCity(
+        const departureStation = await ovRepository.getStationByCity(
             db,
             request.departureStation
         );
-        const arrivalStations = await ovRepository.getStationByCity(
+        const arrivalStation = await ovRepository.getStationByCity(
             db,
             request.arrivalStation
         );
-
+    
         // Validate request parameters including station existence
-        validateRouteRequest(request, departureStations, arrivalStations);
-
-        const departure = departureStations[0];
-        const arrival = arrivalStations[0];
-
-        // Generate and return route with step-by-step instructions
+        validateRouteRequest(request, departureStation, arrivalStation);
+    
+        // Extra check voor TypeScript
+        if (!departureStation || !arrivalStation) {
+            throw new RouteNotFoundError('Stations niet gevonden');  // Dit zou nooit moeten gebeuren door de eerdere validatie
+        }
+    
+        // Nu weet TypeScript zeker dat beide stations bestaan
         return {
-            departure: departure.name,
-            arrival: arrival.name,
+            departure: departureStation.name,
+            arrival: arrivalStation.name,
             steps: [
-                `Ga naar ${departure.platform} bij ${departure.name}.`,
-                `Neem de trein naar ${arrival.name}.`,
-                `Bij aankomst op ${arrival.name}, ga naar de ${arrival.exit} om het station te verlaten.`
+                `Ga naar ${departureStation.platform} bij ${departureStation.name}.`,
+                `Neem de trein naar ${arrivalStation.name}.`,
+                `Bij aankomst op ${arrivalStation.name}, ga naar de ${arrivalStation.exit} om het station te verlaten.`
             ]
         };
     }
-};
+}

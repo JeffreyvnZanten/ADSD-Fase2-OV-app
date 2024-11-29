@@ -1,4 +1,4 @@
-// repository/station.repository.ts
+// ovRepository.ts
 import { Database } from 'sqlite3';
 import { Station } from './types';
 
@@ -6,7 +6,6 @@ import { Station } from './types';
  * Repository layer for database operations related to stations
  * Handles direct database queries and data access
  */
-
 export const ovRepository = {
     /**
      * Retrieves all stations from the database
@@ -22,23 +21,23 @@ export const ovRepository = {
         }),
 
     /**
-     * Retrieves stations for a specific city
+     * Retrieves station for a specific city
      * @param {Database} db - SQLite database connection
      * @param {string} city - City name to search for
-     * @returns {Promise<Station[]>} Array of matching stations
+     * @returns {Promise<Station | null>} Matching station or null if not found
      */
-    getStationByCity: async (db: Database, city: string): Promise<Station[]> =>
+    getStationByCity: async (db: Database, city: string): Promise<Station | null> =>
         new Promise((resolve, reject) => {
-            db.all(
+            db.get(
                 'SELECT * FROM stations WHERE LOWER(city) = LOWER(?)',
                 [city.trim()],
-                (err, rows) => {
+                (err, row) => {
                     if (err) {
                         console.error('Database error:', err);
                         reject(err);
                     }
-                    console.log(`Found stations for city ${city}:`, rows);
-                    resolve(rows as Station[]);
+                    console.log(`Found station for city ${city}:`, row);
+                    resolve(row as Station || null);
                 }
             );
         }),

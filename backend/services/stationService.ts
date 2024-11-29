@@ -19,12 +19,12 @@ export const stationService = {
     },
 
     /**
-     * Retrieves stations for a specific city
+     * Retrieves station for a specific city
      * @param {Database} db - SQLite database connection
      * @param {string} city - City name to search for
-     * @returns {Promise<Station[]>} Array of stations in the specified city
+     * @returns {Promise<Station | null>} Station in the specified city or null if not found
      */
-    getStationsByCity: async (db: Database, city: string): Promise<Station[]> => {
+    getStationsByCity: async (db: Database, city: string): Promise<Station | null> => {
         return ovRepository.getStationByCity(db, city);
     }
 };

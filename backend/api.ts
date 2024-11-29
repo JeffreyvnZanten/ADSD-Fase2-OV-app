@@ -78,16 +78,16 @@ export const createApi = (db: Database) => {
      * - 404: No stations found for city
      * - 500: Server error
      */
-    router.get('/stations/:city', async (req: Request, res: Response<Station[] | ApiError>) => {
+    router.get('/stations/:city', async (req: Request, res: Response<Station | ApiError>) => {
         try {
-            const stations = await stationService.getStationsByCity(db, req.params.city);
-            if (stations.length === 0) {
-                res.status(404).json({ error: 'No stations found for this city' });
+            const station = await stationService.getStationsByCity(db, req.params.city);
+            if (!station) {
+                res.status(404).json({ error: 'No station found for this city' });
                 return;
             }
-            res.json(stations);
+            res.json(station);
         } catch (error) {
-            res.status(500).json({ error: 'Failed to fetch stations' });
+            res.status(500).json({ error: 'Failed to fetch station' });
         }
     });
 
@@ -121,7 +121,6 @@ export const createApi = (db: Database) => {
             });
             res.json(route);
         } catch (error) {
-            // Map domain errors to HTTP responses
             if (error instanceof ValidationError) {
                 res.status(400).json({ error: error.message });
                 return;

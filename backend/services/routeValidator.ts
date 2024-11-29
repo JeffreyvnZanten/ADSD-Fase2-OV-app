@@ -1,11 +1,10 @@
-// services/routeValidator.ts
-import { RouteRequest } from '../types';
-import { Station } from '../types';
+// routeValidator.ts
+import { RouteRequest, Station } from '../types';
 
 /**
-* Custom error class for route validation failures
-* Extends the standard Error class to provide validation-specific error handling
-*/
+ * Custom error class for route validation failures
+ * Extends the standard Error class to provide validation-specific error handling
+ */
 export class ValidationError extends Error {
     /**
      * Creates a new ValidationError instance
@@ -13,43 +12,25 @@ export class ValidationError extends Error {
      */
     constructor(message: string) {
         super(message);
-        // This is needed to make the testing work
         Object.setPrototypeOf(this, ValidationError.prototype);
         this.name = 'ValidationError';
     }
- }
- 
- /**
+}
+
+/**
  * Validates a route request by checking for required fields and business rules
  * 
- * Performs validation checks on:
- * - Presence of both departure and arrival stations 
- * - Stations are not identical
- * 
  * @param request - The route request object to validate
+ * @param departureStation - The departure station from database
+ * @param arrivalStation - The arrival station from database
  * @throws {ValidationError} When validation fails with specific error message
- * 
- * @example
- * ```typescript
- * // Valid request
- * validateRouteRequest({
- *   departureStation: "Amsterdam",
- *   arrivalStation: "Rotterdam"
- * });
- * 
- * // Invalid request - will throw ValidationError
- * validateRouteRequest({
- *   departureStation: "Amsterdam",
- *   arrivalStation: "Amsterdam"
- * });
- * ```
  */
- export function validateRouteRequest(
+export function validateRouteRequest(
     request: RouteRequest,
-    departureStations: Station[],
-    arrivalStations: Station[]
+    departureStation: Station | null,
+    arrivalStation: Station | null
 ): void {
-    // Check if stations are provided
+    // Check if stations are provided in request
     if (!request.departureStation || !request.arrivalStation) {
         throw new ValidationError('Selecteer eerst een vertrek- en aankomststation');
     }
@@ -60,7 +41,7 @@ export class ValidationError extends Error {
     }
 
     // Check if stations exist in database
-    if (!departureStations.length || !arrivalStations.length) {
+    if (!departureStation || !arrivalStation) {
         throw new ValidationError('Selecteer eerst een vertrek- en aankomststation');
     }
 }
