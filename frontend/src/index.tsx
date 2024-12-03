@@ -21,7 +21,7 @@ import OVApp from './OvApp';
 const container = document.getElementById('root');
 
 // Only proceed if we found the root element
-if (container) {
+if (container !== null) {
     // Create a React root using the container
     const root = ReactDOM.createRoot(container);
     

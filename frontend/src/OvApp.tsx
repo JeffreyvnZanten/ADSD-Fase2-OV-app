@@ -67,7 +67,7 @@ function OVApp() {
     return (
         <div className='box-1'>
             {/* Main application title */}
-            <h1   tabIndex={1} aria-label='"Deze website is geoptimaliseerd voor blinde mensen. Je kan het volgende element selecteren met de tab-toets en teruggaan met shift-tab.   Met enter selecteer je een element. En met f7 hoor je deze instructies opnieuw.";'>OV Stations Selector</h1>
+            <h1   tabIndex={0} aria-label='"Deze website is geoptimaliseerd voor blinde mensen. Je kan het volgende element selecteren met de tab-toets en teruggaan met shift-tab.   Met enter selecteer je een element. En met f7 hoor je deze instructies opnieuw.";'>OV Stations Selector</h1>
 
             {/* Departure station dropdown */}
             <StationSelector
@@ -102,9 +102,10 @@ function OVApp() {
                     Reset
                 </button>
             </div>
-
+        <div tabIndex={0}>
             {/* Conditional rendering of route information */}
             {route && <RouteDescription route={route} />}
+            </div>    
         </div>
     );
 }
