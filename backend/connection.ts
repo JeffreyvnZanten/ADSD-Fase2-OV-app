@@ -1,81 +1,71 @@
-// database/connection.ts
+// connection.ts
 import sqlite3, { Database } from 'sqlite3';
 import { readFileSync } from 'fs';
 import path from 'path';
+import { spawn } from 'child_process';
 
 /**
- * Database Connection and Initialization Module
- * 
- * This module handles all database connection and setup operations.
- * It provides functions to create a new database connection and initialize
- * the required database schema.
- * 
- * Key Concepts:
- * - SQLite: Lightweight, file-based database
- * - Promises: For handling asynchronous database operations
- * - Schema Management: Creating and checking database tables
- * 
- * Database Structure:
- * - Single file: 'sqlite.db'
- * - Main table: 'stations' (created from schema.sql)
+ * Database connection and initialization module that handles cross-platform SQLite setup.
+ * Provides functionality for creating database connections and ensuring proper schema initialization.
+ * Handles platform-specific compatibility issues transparently.
  */
 
 /**
- * Creates a new SQLite database connection
- * 
- * @returns {Database} New SQLite database instance
- * 
- * Implementation Details:
- * - Creates or opens 'sqlite.db' file
- * - Returns database connection object
- * - Connection remains open until explicitly closed
- * 
- * Example Usage:
- * const db = createConnection();
- * // use db for queries
- * // remember to close when done: db.close();
+ * Verifies and ensures SQLite compatibility with the current platform.
+ * Attempts to load SQLite normally first, and if that fails, rebuilds
+ * the binary specifically for the current operating system.
  */
-export const createConnection = (): Database => 
-    new sqlite3.Database('sqlite.db');
+const validatePlatformCompatibility = async (): Promise<void> => {
+    return new Promise((resolve, reject) => {
+        try {
+            require('sqlite3');
+            resolve();
+        } catch (error) {
+            console.log('Preparing SQLite for current platform...');
+            const platformBuild = spawn('npm', ['rebuild', 'sqlite3'], {
+                stdio: 'inherit',
+                shell: true
+            });
+            
+            platformBuild.on('close', (code) => {
+                code === 0 
+                    ? resolve()
+                    : reject(new Error('Platform compatibility check failed'));
+            });
+        }
+    });
+};
 
 /**
- * Initializes the database by checking and creating required tables
- * 
- * @param {Database} db - Active database connection
- * @throws {Error} If initialization fails
- * 
- * Implementation Flow:
- * 1. Checks if stations table exists
- * 2. If not, executes schema creation script
- * 3. Handles any errors during process
- * 
- * Example Usage:
- * const db = createConnection();
- * await initializeDatabase(db);
+ * Creates a new database connection after ensuring platform compatibility.
+ * This function handles all necessary platform-specific initialization steps
+ * before establishing the connection.
  */
-export const initializeDatabase = async (db: Database): Promise<void> => {
+export const connectToDatabase = async (): Promise<Database> => {
+    await validatePlatformCompatibility();
+    return new sqlite3.Database('sqlite.db');
+};
+
+/**
+ * Ensures the database schema is properly set up and initialized.
+ * Creates necessary tables if they don't exist by executing the schema SQL.
+ */
+export const setupDatabaseSchema = async (db: Database): Promise<void> => {
     try {
-        const exists = await checkTableExists(db);
-        if (!exists) {
-            await executeSchema(db);
+        const tableExists = await verifyTableExists(db);
+        if (!tableExists) {
+            await createInitialSchema(db);
         }
     } catch (error) {
-        throw new Error(`Database initialization failed: ${error}`);
+        throw new Error(`Schema initialization failed: ${error}`);
     }
 }
 
 /**
- * Checks if the stations table exists in the database
- * 
- * @param {Database} db - Active database connection
- * @returns {Promise<boolean>} True if table exists, false otherwise
- * 
- * Implementation Details:
- * - Queries sqlite_master table for stations table
- * - Returns boolean based on existence
- * - Wraps SQLite callback in Promise for async/await support
+ * Verifies the existence of required database tables.
+ * Checks if the core tables needed for the application exist.
  */
-const checkTableExists = (db: Database): Promise<boolean> =>
+const verifyTableExists = (db: Database): Promise<boolean> =>
     new Promise((resolve, reject) => {
         db.get(
             "SELECT name FROM sqlite_master WHERE type='table' AND name='stations'",
@@ -84,19 +74,10 @@ const checkTableExists = (db: Database): Promise<boolean> =>
     });
 
 /**
- * Executes the SQL schema creation script
- * 
- * @param {Database} db - Active database connection
- * @returns {Promise<void>}
- * 
- * Implementation Details:
- * - Reads schema.sql file from disk
- * - Executes all SQL statements in the file
- * - Handles potential file reading and SQL execution errors
- * 
- * Note: schema.sql should contain all CREATE TABLE statements
+ * Creates the initial database schema from SQL definition file.
+ * Executes the SQL commands defined in schema.sql to set up all necessary tables.
  */
-const executeSchema = (db: Database): Promise<void> =>
+const createInitialSchema = (db: Database): Promise<void> =>
     new Promise((resolve, reject) => {
         const schemaPath = path.join(__dirname, 'schema.sql');
         db.exec(

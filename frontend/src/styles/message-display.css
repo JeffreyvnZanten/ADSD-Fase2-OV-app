@@ -1,27 +1,46 @@
 .message-display {
-    margin: 15px 0;
-    padding: 12px;
+    padding: 1rem;
+    margin: 1rem 0;
     border-radius: 4px;
-    background-color: #f5f5f5;
-    border: 1px solid #9e9e9e;
 }
 
 .message-display.error {
-    background-color: #ffebee;
-    border-color: #d32f2f;
-    color: #d32f2f;
+    background-color: #fee2e2;
+    border: 1px solid #ef4444;
+    color: #991b1b;
 }
 
-.message-display h2 {
-    margin-top: 0;
-    margin-bottom: 10px;
+.message-display.route {
+    background-color: #e0f2fe;
+    border: 1px solid #38bdf8;
+    color: #075985;
 }
 
-.message-display ol {
+.message-display.default {
+    background-color: #f3f4f6;
+    border: 1px solid #d1d5db;
+    color: #1f2937;
+}
+
+.message-title {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.message-content {
     margin: 0;
-    padding-left: 20px;
 }
 
-.message-display li {
-    margin: 5px 0;
+.message-list {
+    margin: 0;
+    padding-left: 1.5rem;
+}
+
+.message-list li {
+    margin-bottom: 0.5rem;
+}
+
+.message-list li:last-child {
+    margin-bottom: 0;
 }
