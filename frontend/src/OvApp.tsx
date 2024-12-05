@@ -98,13 +98,14 @@ function OVApp() {
                 <button 
                     tabIndex={0} 
                     onClick={handleGetRoute}
-                    aria-label='Genereer route'
+                    role="none"
+                    aria-label="Genereer route"
                 >
                     Genereer Route
                 </button>
 
                 {/* Reset form button */}
-                <button onClick={handleReset} aria-label='reset de route'>
+                <button onClick={handleReset} aria-label="reset de route" role="none">
                     Reset
                 </button>
             </div>
