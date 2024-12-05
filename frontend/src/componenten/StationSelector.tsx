@@ -19,7 +19,7 @@
  * />
  */
 
-import React from 'react';
+import React, { useRef } from 'react';
 import { Station } from '../../../backend/types';
 
 /**
@@ -53,6 +53,7 @@ interface StationSelectorProps {
  *    - List of all available stations
  * 4. Handles keyboard navigation via tabIndex
  */
+
 export default function StationSelector({ 
     label, 
     value, 
@@ -60,28 +61,58 @@ export default function StationSelector({
     onChange,
     tabindex
 }: StationSelectorProps) {
+    const selectRef = useRef<HTMLSelectElement>(null);
+
+    const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        // Stop eerst eventuele lopende screen reader aankondigingen
+        if (window.speechSynthesis) {
+            window.speechSynthesis.cancel();
+        }
+
+        // Roep direct de onChange aan zodat de selectie meteen wordt verwerkt
+        onChange(event);
+
+        // Als we extra handelingen willen doen voor de screen reader, 
+        // kunnen we die in de timeout plaatsen
+        setTimeout(() => {
+            // Hier kunnen we extra screen reader logica toevoegen indien nodig
+            if (selectRef.current) {
+                // Bijvoorbeeld een extra aria-live update
+                selectRef.current.setAttribute('aria-live', 'off');
+                setTimeout(() => {
+                    selectRef.current?.setAttribute('aria-live', 'polite');
+                }, 50);
+            }
+        }, 100);
+    };
+
     return (
         <div className='downunder'>
-            {/* Label for accessibility and visual clarity */}
-            <label>{label}:</label>
+            <label htmlFor={`station-${label}`}>{label}:</label>
             
-            {/* Dropdown menu with stations */}
             <select 
+                ref={selectRef}
+                id={`station-${label}`}
                 tabIndex={tabindex} 
                 value={value} 
-                onChange={onChange}
+                onChange={handleChange}
                 aria-label={`Kies ${label.toLowerCase()}`}
+                aria-live="polite"
+                aria-atomic="true"
             >
-                {/* Default option */}
-                <option value="" aria-label={`Selecteer ${label.toLowerCase()}`}>
+                <option 
+                    value="" 
+                    role="option"
+                    aria-label={`Selecteer ${label.toLowerCase()}`}
+                >
                     -- Selecteer {label.toLowerCase()} --
                 </option>
                 
-                {/* Map through all stations to create options */}
                 {stations.map((station) => (
                     <option 
                         key={station.id} 
                         value={station.city}
+                        role="option"
                         aria-label={station.city}
                     >
                         {station.city}
