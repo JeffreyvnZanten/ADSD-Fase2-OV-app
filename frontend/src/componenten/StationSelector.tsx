@@ -70,9 +70,10 @@ export default function StationSelector({
                 tabIndex={tabindex} 
                 value={value} 
                 onChange={onChange}
+                aria-label={`Kies ${label.toLowerCase()}`}
             >
                 {/* Default option */}
-                <option value="">
+                <option value="" aria-label={`Selecteer ${label.toLowerCase()}`}>
                     -- Selecteer {label.toLowerCase()} --
                 </option>
                 
@@ -81,6 +82,7 @@ export default function StationSelector({
                     <option 
                         key={station.id} 
                         value={station.city}
+                        aria-label={station.city}
                     >
                         {station.city}
                     </option>
