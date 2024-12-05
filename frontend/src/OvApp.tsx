@@ -22,7 +22,7 @@
 import React, { useRef, useEffect } from 'react';
 import useOvApp from './hooks/useOvApp'; 
 import StationSelector from './componenten/StationSelector';
-import RouteDescription from './componenten/RouteDescription';
+// import RouteDescription from './componenten/RouteDescription';
 import RouteDisplay from './componenten/RouteDisplay';
 import ErrorDisplay from './componenten/ErrorDisplay';
 import { speak } from './hooks/useSpeak';

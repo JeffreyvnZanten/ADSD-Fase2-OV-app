@@ -1,46 +1,15 @@
 .message-display {
-    padding: 1rem;
     margin: 1rem 0;
+    padding: 1rem;
     border-radius: 4px;
 }
 
-.message-display.error {
-    background-color: #fee2e2;
-    border: 1px solid #ef4444;
-    color: #991b1b;
-}
-
 .message-display.route {
-    background-color: #e0f2fe;
-    border: 1px solid #38bdf8;
-    color: #075985;
+    background-color: #e8f4f8;
+    border: 1px solid #b8d8e6;
 }
 
-.message-display.default {
-    background-color: #f3f4f6;
-    border: 1px solid #d1d5db;
-    color: #1f2937;
-}
-
-.message-title {
-    margin: 0 0 0.5rem 0;
-    font-size: 1.1rem;
-    font-weight: 600;
-}
-
-.message-content {
+.message-display p {
     margin: 0;
-}
-
-.message-list {
-    margin: 0;
-    padding-left: 1.5rem;
-}
-
-.message-list li {
-    margin-bottom: 0.5rem;
-}
-
-.message-list li:last-child {
-    margin-bottom: 0;
+    line-height: 1.5;
 }
