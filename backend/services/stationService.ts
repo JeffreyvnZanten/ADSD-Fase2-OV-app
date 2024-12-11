@@ -1,7 +1,7 @@
 // services/station.service.ts
 import { Database } from 'sqlite3';
 import { Station } from '../types';
-import { ovRepository } from '../ovRepository';
+import { stationRepository } from '../stationRepository';
 
 /**
  * Service layer for station-related operations
@@ -14,9 +14,8 @@ export const stationService = {
      * @param {Database} db - SQLite database connection
      * @returns {Promise<Station[]>} Array of all stations
      */
-    getAllStations: async (db: Database): Promise<Station[]> => {
-        return ovRepository.getAllStations(db);
-    },
+    getAllStations: async (): Promise<Station[]> => 
+        stationRepository.getAllStations(),
 
     /**
      * Retrieves station for a specific city
@@ -24,7 +23,6 @@ export const stationService = {
      * @param {string} city - City name to search for
      * @returns {Promise<Station | null>} Station in the specified city or null if not found
      */
-    getStationsByCity: async (db: Database, city: string): Promise<Station | null> => {
-        return ovRepository.getStationByCity(db, city);
-    }
+    getStationsByCity: async (city: string): Promise<Station | null> =>
+        stationRepository.getStationByCity(city)
 };

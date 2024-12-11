@@ -6,8 +6,8 @@
 
 import { Database } from 'sqlite3';
 import { Route, RouteRequest, Station } from '../types';
-import { ovRepository } from '../ovRepository';
 import { validateRouteRequest } from './routeValidator';
+import { stationRepository } from '../stationRepository';
 
 /**
  * Custom error class for when a requested route cannot be found or generated
@@ -44,16 +44,13 @@ export const routeService = {
      * @throws {RouteNotFoundError} When stations cannot be found or no route exists
      */
     calculateRoute: async (
-        db: Database,
         request: RouteRequest
     ): Promise<Route> => {
         // Fetch station information from database
-        const departureStation = await ovRepository.getStationByCity(
-            db,
+        const departureStation = await stationRepository.getStationByCity(
             request.departureStation
         );
-        const arrivalStation = await ovRepository.getStationByCity(
-            db,
+        const arrivalStation = await stationRepository.getStationByCity(
             request.arrivalStation
         );
     

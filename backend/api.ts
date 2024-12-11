@@ -13,19 +13,11 @@ import { ValidationError } from './services/routeValidator';
  * This file defines all REST API endpoints for the OV application.
  * It uses Express.js for routing and handles all HTTP requests.
  * 
- * Key Concepts:
- * - Express Router: Groups related routes together
- * - Async/Await: For handling asynchronous database operations
- * - Error Handling: Try-catch blocks for graceful error responses
- * - Type Safety: TypeScript interfaces for request/response types
- * 
  * API Structure:
  * - GET /stations: Retrieve all stations
  * - GET /stations/:city: Get stations for a specific city
  * - GET /route: Calculate route between two stations
- */
-
-/**
+ * 
  * Creates and configures the Express router
  * 
  * @param {Database} db - SQLite database connection
@@ -36,7 +28,7 @@ import { ValidationError } from './services/routeValidator';
  * 2. Defines all API endpoints
  * 3. Implements error handling for each route
  */
-export const createApi = (db: Database) => {
+export const createApi = () => {
     const router = express.Router();
 
     /**
@@ -59,7 +51,7 @@ export const createApi = (db: Database) => {
      */
     router.get('/stations', async (_req: Request, res: Response<Station[] | ApiError>) => {
         try {
-            const stations = await stationService.getAllStations(db);
+            const stations = await stationService.getAllStations();
             res.json(stations);
         } catch (error) {
             res.status(500).json({ error: 'Failed to fetch stations' });
@@ -80,7 +72,7 @@ export const createApi = (db: Database) => {
      */
     router.get('/stations/:city', async (req: Request, res: Response<Station | ApiError>) => {
         try {
-            const station = await stationService.getStationsByCity(db, req.params.city);
+            const station = await stationService.getStationsByCity(req.params.city);
             if (!station) {
                 res.status(404).json({ error: 'No station found for this city' });
                 return;
@@ -115,7 +107,7 @@ export const createApi = (db: Database) => {
         const { departureStation, arrivalStation } = req.query;
     
         try {
-            const route = await routeService.calculateRoute(db, {
+            const route = await routeService.calculateRoute({
                 departureStation,
                 arrivalStation
             });

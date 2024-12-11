@@ -1,8 +1,8 @@
 // index.ts
 import express from 'express';
-import { connectToDatabase, setupDatabaseSchema } from './connection';
 import { createApi } from './api';
 import cors from 'cors';
+import { databaseService } from './database';
 
 /**
  * Main application server that initializes and coordinates all components.
@@ -20,15 +20,16 @@ const startApplicationServer = async () => {
     
     try {
         // Initialize database connection and schema
-        const database = await connectToDatabase();
-        await setupDatabaseSchema(database);
+        // const database = await connectToDatabase();
+        // await setupDatabaseSchema(database);
+        await databaseService.initialize();
         
         // Configure middleware
         app.use(cors());
         app.use(express.json());
         
         // Set up API routes
-        app.use('/api', createApi(database));
+        app.use('/api', createApi());
         
         // Start HTTP server
         const serverPort = process.env.PORT || 4010;
@@ -39,7 +40,7 @@ const startApplicationServer = async () => {
         // Handle graceful shutdown
         process.on('SIGTERM', () => {
             console.log('Shutting down server gracefully...');
-            database.close();
+            // database.close();
             process.exit(0);
         });
         
