@@ -5,7 +5,6 @@
  */
 import { Route, RouteRequest, Station } from '../types';
 import { validateRouteRequest } from './routeValidator';
-import { stationRepository } from '../stationRepository';
 
 /**
  * Custom error class for when a requested route cannot be found or generated
@@ -27,47 +26,24 @@ export class RouteNotFoundError extends Error {
  */
 export const routeService = {
     /**
-     * Calculates a travel route between two stations
+     * Geeft routegegevens terug voor een gevalideerd verzoek
      * 
-     * Process flow:
-     * 1. Validates the route request
-     * 2. Retrieves station information from database
-     * 3. Verifies both stations exist
-     * 4. Generates step-by-step route instructions
-     * 
-     * @param request - Route request containing departure and arrival stations
-     * @returns Promise resolving to a Route object with step-by-step instructions
-     * @throws {ValidationError} When request validation fails
-     * @throws {RouteNotFoundError} When stations cannot be found or no route exists
+     * @param request - Het routeverzoek met vertrek- en aankomststation
+     * @returns Route object met reisgegevens
      */
-    calculateRoute: async (
-        request: RouteRequest
-    ): Promise<Route> => {
-        // Fetch station information from database
-        const departureStation = await stationRepository.getStationByCity(
-            request.departureStation
-        );
-        const arrivalStation = await stationRepository.getStationByCity(
-            request.arrivalStation
-        );
-    
-        // Validate request parameters including station existence
-        validateRouteRequest(request, departureStation, arrivalStation);
-    
-        // Extra check voor TypeScript
-        if (!departureStation || !arrivalStation) {
-            throw new RouteNotFoundError('Stations niet gevonden');  // Dit zou nooit moeten gebeuren door de eerdere validatie
-        }
-    
-        // Nu weet TypeScript zeker dat beide stations bestaan
+    getRouteData: async (request: RouteRequest): Promise<Route> => {
+        // Controleer eerst of de route logisch valide is
+        const isValidRoute = validateRouteRequest(request);
+
+        // Als de validatie succesvol was, kunnen we de routegegevens samenstellen
         return {
-            departure: departureStation.name,
-            arrival: arrivalStation.name,
+            departure: request.departureStation,
+            arrival: request.arrivalStation,
             steps: [
-                `Ga naar ${departureStation.platform} bij ${departureStation.name}.`,
-                `Neem de trein naar ${arrivalStation.name}.`,
-                `Bij aankomst op ${arrivalStation.name}, ga naar de ${arrivalStation.exit} om het station te verlaten.`
+                `Ga naar het perron bij ${request.departureStation}.`,
+                `Neem de trein naar ${request.arrivalStation}.`,
+                `Bij aankomst op ${request.arrivalStation}, ga naar de uitgang om het station te verlaten.`
             ]
         };
     }
-}
+};

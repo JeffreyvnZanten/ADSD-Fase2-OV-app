@@ -7,7 +7,9 @@ CREATE TABLE IF NOT EXISTS stations (
   exit TEXT NOT NULL
 );
 
-INSERT INTO stations (id, name, code, city, platform, exit) VALUES
+-- Adding OR IGNORE tells SQLite to skip records that would violate unique constraints
+-- rather than throwing an error
+INSERT OR IGNORE INTO stations (id, name, code, city, platform, exit) VALUES
 (1, 'Station Amsterdam Centraal', 'AMS', 'Amsterdam', 'Perron 5', 'Hoofduitgang'),
 (2, 'Station Rotterdam Centraal', 'RTD', 'Rotterdam', 'Perron 3', 'Noorduitgang'),
 (3, 'Station Utrecht Centraal', 'UTC', 'Utrecht', 'Perron 12', 'Zuiduitgang'),

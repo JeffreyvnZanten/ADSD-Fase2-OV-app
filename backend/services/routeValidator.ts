@@ -18,30 +18,38 @@ export class ValidationError extends Error {
 }
 
 /**
- * Validates a route request by checking for required fields and business rules
- * 
- * @param request - The route request object to validate
- * @param departureStation - The departure station from database
- * @param arrivalStation - The arrival station from database
- * @throws {ValidationError} When validation fails with specific error message
+ * Controleert of beide stations zijn opgegeven in het verzoek.
+ * Gooit een ValidationError als één of beide stations ontbreken.
  */
-export function validateRouteRequest(
-    request: RouteRequest,
-    departureStation: Station | null,
-    arrivalStation: Station | null
-): void {
-    // Check if stations are provided in request
+function validateStationsProvided(request: RouteRequest): void {
     if (!request.departureStation || !request.arrivalStation) {
         throw new ValidationError('Selecteer eerst een vertrek- en aankomststation');
     }
+}
 
-    // Check if stations are the same
+/**
+ * Controleert of het vertrek- en aankomststation verschillend zijn.
+ * Gooit een ValidationError als de stations hetzelfde zijn.
+ */
+function validateDifferentStations(request: RouteRequest): void {
     if (request.departureStation === request.arrivalStation) {
         throw new ValidationError('Het vertrek- en aankomststation kunnen niet hetzelfde zijn');
     }
+}
 
-    // Check if stations exist in database
-    if (!departureStation || !arrivalStation) {
-        throw new ValidationError('Selecteer eerst een vertrek- en aankomststation');
-    }
+/**
+ * Valideert een route aanvraag door alle validatieregels te controleren.
+ * Retourneert true als de route valide is, gooit een ValidationError bij ongeldige input.
+ * 
+ * @param request - Route aanvraag met vertrek- en aankomststation
+ * @returns boolean die aangeeft of de route valide is
+ * @throws ValidationError bij ongeldige route
+ */
+export function validateRouteRequest(request: RouteRequest): boolean {
+    // Voer alle validaties uit
+    validateStationsProvided(request);
+    validateDifferentStations(request);
+    
+    // Als de validaties zijn goed gegaan dan returned de functie true
+    return true;
 }

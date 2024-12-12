@@ -1,6 +1,5 @@
 // api.ts
 import express, { Request, Response } from 'express';
-import { Database } from 'sqlite3';
 import { Station, Route, ApiError, RouteRequest } from './types';
 import { stationService } from './services/stationService';
 import { routeService } from './services/routeService';
@@ -72,7 +71,7 @@ export const createApi = () => {
      */
     router.get('/stations/:city', async (req: Request, res: Response<Station | ApiError>) => {
         try {
-            const station = await stationService.getStationsByCity(req.params.city);
+            const station = await stationService.getStationByCity(req.params.city);
             if (!station) {
                 res.status(404).json({ error: 'No station found for this city' });
                 return;
@@ -88,8 +87,7 @@ export const createApi = () => {
      * Calculates a route between two stations
      * 
      * Query Parameters:
-     * - departureStation: Name of departure city
-     * - arrivalStation: Name of arrival city
+     * - RouteRequest
      * 
      * Response Codes:
      * - 200: Route calculated successfully
@@ -104,24 +102,25 @@ export const createApi = () => {
         req: Request<{}, {}, {}, RouteRequest>, 
         res: Response<Route | ApiError>
     ) => {
-        const { departureStation, arrivalStation } = req.query;
-    
         try {
-            const route = await routeService.calculateRoute({
-                departureStation,
-                arrivalStation
-            });
-            res.json(route);
+            const routeData = await routeService.getRouteData(req.query);
+            res.json(routeData);
         } catch (error) {
             if (error instanceof ValidationError) {
+                // 400 voor validatiefouten (bijvoorbeeld dezelfde stations)
                 res.status(400).json({ error: error.message });
                 return;
             }
+            
             if (error instanceof RouteNotFoundError) {
+                // 404 voor niet-gevonden routes (voor toekomstige use cases)
                 res.status(404).json({ error: error.message });
                 return;
             }
-            res.status(500).json({ error: 'Er is een fout opgetreden bij het berekenen van de route' });
+            // 500 voor onverwachte fouten
+            res.status(500).json({ 
+                error: 'Er is een onverwachte fout opgetreden bij het ophalen van de routegegevens' 
+            });
         }
     });
 
