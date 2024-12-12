@@ -72,7 +72,7 @@ export const createApi = () => {
      */
     router.get('/stations/:city', async (req: Request, res: Response<Station | ApiError>) => {
         try {
-            const station = await stationService.getStationsByCity(req.params.city);
+            const station = await stationService.getStationByCity(req.params.city);
             if (!station) {
                 res.status(404).json({ error: 'No station found for this city' });
                 return;

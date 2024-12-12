@@ -23,6 +23,6 @@ export const stationService = {
      * @param {string} city - City name to search for
      * @returns {Promise<Station | null>} Station in the specified city or null if not found
      */
-    getStationsByCity: async (city: string): Promise<Station | null> =>
+    getStationByCity: async (city: string): Promise<Station | null> =>
         stationRepository.getStationByCity(city)
 };
