@@ -13,7 +13,7 @@ const getSourcePath = () => {
 };
 
 const getDatabasePath = (): string => {
-    const projectRoot = path.resolve(__dirname, '..', '..');
+    const projectRoot = path.resolve(__dirname, '..');
     const dbFolder = path.join(projectRoot, 'data');
     return path.join(dbFolder, 'sqlite.db');
 };

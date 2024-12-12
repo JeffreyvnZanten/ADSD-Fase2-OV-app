@@ -4,7 +4,6 @@
  * Handles business logic for generating travel routes between stations
  */
 
-import { Database } from 'sqlite3';
 import { Route, RouteRequest, Station } from '../types';
 import { validateRouteRequest } from './routeValidator';
 import { stationRepository } from '../stationRepository';

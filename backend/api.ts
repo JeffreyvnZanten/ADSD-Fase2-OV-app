@@ -1,6 +1,5 @@
 // api.ts
 import express, { Request, Response } from 'express';
-import { Database } from 'sqlite3';
 import { Station, Route, ApiError, RouteRequest } from './types';
 import { stationService } from './services/stationService';
 import { routeService } from './services/routeService';
