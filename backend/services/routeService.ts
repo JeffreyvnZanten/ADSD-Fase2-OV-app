@@ -3,8 +3,6 @@
  * Service layer for route calculation operations
  * Handles business logic for generating travel routes between stations
  */
-
-import { Database } from 'sqlite3';
 import { Route, RouteRequest, Station } from '../types';
 import { validateRouteRequest } from './routeValidator';
 import { stationRepository } from '../stationRepository';
@@ -37,7 +35,6 @@ export const routeService = {
      * 3. Verifies both stations exist
      * 4. Generates step-by-step route instructions
      * 
-     * @param db - Database connection instance
      * @param request - Route request containing departure and arrival stations
      * @returns Promise resolving to a Route object with step-by-step instructions
      * @throws {ValidationError} When request validation fails
