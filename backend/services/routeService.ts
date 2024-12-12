@@ -36,7 +36,6 @@ export const routeService = {
      * 3. Verifies both stations exist
      * 4. Generates step-by-step route instructions
      * 
-     * @param db - Database connection instance
      * @param request - Route request containing departure and arrival stations
      * @returns Promise resolving to a Route object with step-by-step instructions
      * @throws {ValidationError} When request validation fails
@@ -56,12 +55,11 @@ export const routeService = {
         // Validate request parameters including station existence
         validateRouteRequest(request, departureStation, arrivalStation);
     
-        // Extra check voor TypeScript
+        // TypeScript null check safeguard
         if (!departureStation || !arrivalStation) {
             throw new RouteNotFoundError('Stations niet gevonden');  // Dit zou nooit moeten gebeuren door de eerdere validatie
         }
     
-        // Nu weet TypeScript zeker dat beide stations bestaan
         return {
             departure: departureStation.name,
             arrival: arrivalStation.name,

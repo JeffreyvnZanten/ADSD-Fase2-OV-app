@@ -10,7 +10,6 @@ import { stationRepository } from '../stationRepository';
 export const stationService = {
     /**
      * Retrieves all stations from the database
-     * @param {Database} db - SQLite database connection
      * @returns {Promise<Station[]>} Array of all stations
      */
     getAllStations: async (): Promise<Station[]> => 
@@ -18,7 +17,6 @@ export const stationService = {
 
     /**
      * Retrieves station for a specific city
-     * @param {Database} db - SQLite database connection
      * @param {string} city - City name to search for
      * @returns {Promise<Station | null>} Station in the specified city or null if not found
      */
