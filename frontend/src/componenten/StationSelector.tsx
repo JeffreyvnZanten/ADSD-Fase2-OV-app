@@ -19,8 +19,10 @@
  * />
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Station } from '../../../backend/types';
+
+
 
 /**
  * Props Interface
@@ -34,7 +36,7 @@ interface StationSelectorProps {
     /** Array of all available stations to choose from */
     stations: Station[];
     /** Function to call when user selects a different station */
-    onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
     /** Tab order for keyboard navigation (accessibility feature) */
     tabindex: number;
 }
@@ -59,33 +61,37 @@ export default function StationSelector({
     stations, 
     onChange,
     tabindex
-}: StationSelectorProps) {
+}: Readonly<StationSelectorProps>) {
+
+    const [suggestions, setSuggestions] = useState<string[]>([]);
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const inputValue = event.target.value;
+        onChange(event);
+
+        // Filter stations op basis van de input
+        const filteredSuggestions = stations
+            .filter(station => station.city.toLowerCase().includes(inputValue.toLowerCase()))
+            .map(station => station.city);
+        setSuggestions(filteredSuggestions);
+    }; 
+
     return (
         <div className='downunder'>
-            {/* Label for accessibility and visual clarity */}
-            <label>{label}:</label>
-            
-            {/* Dropdown menu with stations */}
-            <select 
+            <label htmlFor={label}>{label}:</label>
+            <input 
+                type="text" 
+                id={label}
                 tabIndex={tabindex} 
                 value={value} 
-                onChange={onChange}
-            >
-                {/* Default option */}
-                <option value="">
-                    -- Selecteer {label.toLowerCase()} --
-                </option>
-                
-                {/* Map through all stations to create options */}
-                {stations.map((station) => (
-                    <option 
-                        key={station.id} 
-                        value={station.city}
-                    >
-                        {station.city}
-                    </option>
+                onChange={handleChange}
+                list={`${label}-suggestions`} 
+            />
+            <datalist id={`${label}-suggestions`}>
+                {suggestions.map((suggestion) => (
+                    <option key={suggestion} value={suggestion} />
                 ))}
-            </select>
+            </datalist>
         </div>
     );
 }

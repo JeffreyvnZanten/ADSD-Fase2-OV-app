@@ -74,10 +74,10 @@ function OVApp() {
 
             {/* Departure station dropdown */}
             <StationSelector
-                label="Vertrekstation"
+        label="Vertrekstation"
                 value={departureStation}
                 stations={stations}
-                onChange={handleDepartureChange}
+                onChange={handleDepartureChange} // Gebruik de aangepaste functie
                 tabindex={0}
             />
             
@@ -86,7 +86,7 @@ function OVApp() {
                 label="Aankomststation"
                 value={arrivalStation}
                 stations={stations}
-                onChange={handleArrivalChange}
+                onChange={handleArrivalChange} // Gebruik de aangepaste functie
                 tabindex={0}
             />
 
@@ -98,11 +98,6 @@ function OVApp() {
                     onClick={handleGetRoute}
                 >
                     Genereer Route
-                </button>
-
-                {/* Reset form button */}
-                <button onClick={handleReset}>
-                    Reset
                 </button>
             </div>
 
