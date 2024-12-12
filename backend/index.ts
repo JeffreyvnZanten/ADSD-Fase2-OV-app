@@ -1,65 +1,57 @@
-/**
- * Main Application Server
- * 
- * This file serves as the entry point for the OV application server. It handles
- * the core setup of the Express application, including database initialization,
- * middleware configuration, and server startup.
- * 
- * Key Components:
- * - Express.js for HTTP server functionality
- * - SQLite database connection and initialization
- * - CORS middleware for handling cross-origin requests
- * - JSON parsing middleware for request body handling
- * - API route mounting for all endpoints
- * 
- * The server follows a modular architecture where database connection, API routes,
- * and server initialization are separated into distinct, manageable components.
- */
-
+// index.ts
 import express from 'express';
-import { createConnection, initializeDatabase } from './connection';
 import { createApi } from './api';
 import cors from 'cors';
+import { databaseService } from './database';
 
 /**
- * Initializes and starts the Express server
- * 
- * This function performs the following operations in sequence:
- * 1. Creates a new Express application instance
- * 2. Establishes a database connection
- * 3. Initializes the database schema if needed
- * 4. Sets up middleware (CORS and JSON parsing)
- * 5. Mounts API routes
- * 6. Starts the HTTP server on the configured port
- * 
- * The server uses port 4010 by default but can be configured via
- * the PORT environment variable.
- * 
- * Error handling is implemented to gracefully handle startup failures
- * and exit the process if critical initialization steps fail.
- * 
- * @returns {Promise<void>}
+ * Main application server that initializes and coordinates all components.
+ * Handles server startup, middleware configuration, and API route setup.
+ * Ensures proper database initialization before starting the HTTP server.
  */
-const startServer = async () => {
+
+/**
+ * Initializes and starts the application server.
+ * Coordinates the startup sequence including database setup,
+ * middleware configuration, and HTTP server initialization.
+ */
+const startApplicationServer = async () => {
     const app = express();
-    const db = createConnection();
     
     try {
-        await initializeDatabase(db);
+        // Initialize database connection and schema
+        // const database = await connectToDatabase();
+        // await setupDatabaseSchema(database);
+        await databaseService.initialize();
         
+        // Configure middleware
         app.use(cors());
         app.use(express.json());
-        app.use('/api', createApi(db));
         
-        const port = process.env.PORT || 4010;
-        app.listen(port, () => {
-            console.log(`Server running on port ${port}`);
+        // Set up API routes
+        app.use('/api', createApi());
+        
+        // Start HTTP server
+        const serverPort = process.env.PORT || 4010;
+        app.listen(serverPort, () => {
+            console.log(`Server ready and listening on port ${serverPort}`);
         });
+        
+        // Handle graceful shutdown
+        process.on('SIGTERM', () => {
+            console.log('Shutting down server gracefully...');
+            // database.close();
+            process.exit(0);
+        });
+        
     } catch (error) {
-        console.error('Failed to start server:', error);
+        console.error('Server initialization failed:', error);
         process.exit(1);
     }
 };
 
-// Initialize the server
-startServer();
+// Initialize the application
+startApplicationServer().catch(error => {
+    console.error('Fatal application error:', error);
+    process.exit(1);
+});

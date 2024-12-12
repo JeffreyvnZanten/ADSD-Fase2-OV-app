@@ -22,11 +22,11 @@
 import React, { useState ,useRef, useEffect } from 'react';
 import useOvApp from './hooks/useOvApp'; 
 import StationSelector from './componenten/StationSelector';
-import RouteDescription from './componenten/RouteDescription';
-import { speak } from './hooks/useSpeak';
-import './styles/tab.css';
+// import RouteDescription from './componenten/RouteDescription';
 import RouteDisplay from './componenten/RouteDisplay';
 import ErrorDisplay from './componenten/ErrorDisplay';
+import { speak } from './hooks/useSpeak';
+import './styles/tab.css';
 
 /**
  * Main Application Component
@@ -74,7 +74,7 @@ function OVApp() {
 
             {/* Departure station dropdown */}
             <StationSelector
-        label="Vertrekstation"
+                label="Vertrekstation"
                 value={departureStation}
                 stations={stations}
                 onChange={handleDepartureChange} // Gebruik de aangepaste functie
@@ -96,6 +96,8 @@ function OVApp() {
                 <button 
                     tabIndex={0} 
                     onClick={handleGetRoute}
+                    role="none"
+                    aria-label="Genereer route"
                 >
                     Genereer Route
                 </button>

@@ -87,7 +87,8 @@ function useOvApp() {
             
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.error || 'Route kon niet worden opgehaald');
+                setError(errorData.error); // Gebruik de error message van de API
+                return; // Stop verder uitvoeren
             }
      
             const data: Route = await response.json();
