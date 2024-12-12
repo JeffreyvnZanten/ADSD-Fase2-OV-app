@@ -2,12 +2,18 @@
 import { Station } from './types';
 import { databaseService } from './database';
 
+export interface IStationRepository {
+    getAllStations(): Promise<Station[]>;
+    getStationByCity(city: string): Promise<Station | null>;
+    getStationByCode(stationCode: string): Promise<Station | null>;
+}
+
 /**
  * Repository responsible for managing station-related database operations.
  * Provides methods to query and retrieve station information from the database.
  * All methods perform case-insensitive searches when applicable.
  */
-export const stationRepository = {
+export const stationRepository: IStationRepository = {
     /**
      * Retrieves all stations from the database.
      * This function performs a full table scan of the stations table.
