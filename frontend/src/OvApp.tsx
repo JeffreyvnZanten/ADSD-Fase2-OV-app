@@ -74,7 +74,7 @@ function OVApp() {
 
             {/* Departure station dropdown */}
             <StationSelector
-                label="Vertrekstation"
+                label="Vertrekstation: voer hier je station in"
                 value={departureStation}
                 stations={stations}
                 onChange={handleDepartureChange} // Gebruik de aangepaste functie
@@ -83,7 +83,7 @@ function OVApp() {
             
             {/* Arrival station dropdown */}
             <StationSelector
-                label="Aankomststation"
+                label="Aankomststation: voer hier je station in"
                 value={arrivalStation}
                 stations={stations}
                 onChange={handleArrivalChange} // Gebruik de aangepaste functie

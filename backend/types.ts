@@ -11,6 +11,8 @@
  * - Optional properties: Marked with ? (not used here but good to know)
  */
 
+import { idText } from "typescript"
+
 /**
  * Station Interface
  * Represents a train station with all its properties
@@ -26,6 +28,8 @@
  * }
  */
 export interface Station {
+    platform: any
+    exit: any
     /** Unique number to identify each station */
     id: number
     /** Complete name of the station (e.g., "Amsterdam Centraal") */
@@ -34,10 +38,61 @@ export interface Station {
     code: string
     /** City where the station is located */
     city: string
-    /** Platform information for announcements */
-    platform: string
-    /** Exit information for navigation */
-    exit: string
+}
+
+export interface Platform {
+    
+    id: number
+
+    station_id: number
+
+    platform_number: string
+   
+}
+
+export interface Exit {
+
+    id: number
+
+    station_id: number
+    
+    exit_name: string
+
+}
+
+export interface navigation_step {
+    
+    id: number
+    
+    station_id: number
+
+    exit_id: number 
+
+    platform_id: number 
+
+    step_number: number
+
+    instruction_text: string
+    
+    landmark_description: string
+    
+    distance_meters: number
+
+} 
+
+
+export interface Journey {
+    
+    id: number
+
+    departure_platform_id: number
+
+    arrival_platform_id: number
+
+    departure_time: number
+
+    arrival_time: number
+
 }
 
 /**
