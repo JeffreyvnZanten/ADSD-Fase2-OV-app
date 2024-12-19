@@ -7,6 +7,8 @@
 import { Route, RouteRequest, Station } from '../types';
 import { validateRouteRequest } from './routeValidator';
 import { stationRepository } from '../stationRepository';
+import { ovRepository } from '../ovRepository';
+import { databaseService } from '../database';
 
 /**
  * Custom error class for when a requested route cannot be found or generated
@@ -59,6 +61,10 @@ export const routeService = {
         if (!departureStation || !arrivalStation) {
             throw new RouteNotFoundError('Stations niet gevonden');  // Dit zou nooit moeten gebeuren door de eerdere validatie
         }
+
+        const navigation_steps = await ovRepository.getAllNavigationSteps();
+
+        console.log("stappen" + navigation_steps);
     
         return {
             departure: departureStation.name,

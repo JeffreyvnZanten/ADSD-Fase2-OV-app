@@ -3,12 +3,11 @@ import BetterSqlite3 from 'better-sqlite3';
 import type { Database } from 'better-sqlite3';
 import * as fs from 'fs';
 import * as path from 'path';
+import { readdirSync } from 'fs';
 
 let database: Database | null = null;
 
-// Helper om het juiste source pad te krijgen, rekening houdend met de dist directory
 const getSourcePath = () => {
-    // Als we in dist/backend draaien, gaan we twee levels omhoog en dan naar backend
     return path.resolve(__dirname, '..', 'backend');
 };
 
@@ -18,30 +17,37 @@ const getDatabasePath = (): string => {
     return path.join(dbFolder, 'sqlite.db');
 };
 
-const getSchemaPath = (): string => {
-    // We gebruiken getSourcePath om naar het originele schema.sql te verwijzen
-    return path.join(getSourcePath(), 'schema.sql');
+const getSqlFiles = (directory: string): string[] => {
+    try {
+        return readdirSync(directory)
+            .filter(file => file.endsWith('.sql'))
+            .map(file => path.join(directory, file));
+    } catch (error) {
+        console.error('Error reading SQL directory:', error);
+        return [];
+    }
 };
 
-// Rest of your initialization code remains similar, but with better-sqlite3 syntax
+const getSortedSqlFiles = (directory: string): string[] => {
+    return getSqlFiles(directory).sort((a, b) => {
+        const fileA = path.basename(a);
+        const fileB = path.basename(b);
+        return fileA.localeCompare(fileB);
+    });
+};
+
 const initialize = async (): Promise<void> => {
     if (!database) {
         const dbPath = getDatabasePath();
         const dbDir = path.dirname(dbPath);
-        const schemaPath = getSchemaPath();
-
-        console.log('Database path:', dbPath);
-        console.log('Schema path:', schemaPath);
 
         if (!fs.existsSync(dbDir)) {
             fs.mkdirSync(dbDir, { recursive: true });
         }
 
         try {
-            // We use BetterSqlite3 to create the database instance
             database = new BetterSqlite3(dbPath);
-            const schema = fs.readFileSync(schemaPath, 'utf-8');
-            database.exec(schema);
+            await setupSchema();
         } catch (error) {
             console.error('Failed to initialize database:', error);
             throw error;
@@ -49,26 +55,63 @@ const initialize = async (): Promise<void> => {
     }
 };
 
+const isTableEmpty = async (tableName: string): Promise<boolean> => {
+    if (!database) throw new Error('Database not initialized');
+    
+    const result = await queryOne<{ count: number }>(
+        `SELECT COUNT(*) as count FROM ${tableName}`
+    );
+    
+    return result?.count === 0;
+};
+
+const getAllTableNames = async (): Promise<string[]> => {
+    if (!database) throw new Error('Database not initialized');
+    
+    const tables = await query<{ name: string }>(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name NOT IN ('schema_migrations', 'sqlite_sequence')"
+    );
+    
+    return tables.map(table => table.name);
+};
+
+const areAllTablesEmpty = async (): Promise<boolean> => {
+    const tableNames = await getAllTableNames();
+    
+    for (const tableName of tableNames) {
+        if (!(await isTableEmpty(tableName))) {
+            return false;
+        }
+    }
+    
+    return true;
+};
+
 const setupSchema = async (): Promise<void> => {
     if (!database) throw new Error('Database not initialized');
     
-    const hasTable = await queryOne<{ name: string }>(
-        "SELECT name FROM sqlite_master WHERE type='table' AND name='stations'"
-    );
+    const tablesEmpty = await areAllTablesEmpty();
     
-    if (!hasTable) {
-        const schemaPath = getSchemaPath();
+    if (!tablesEmpty) {
+        console.log('Tables already contain data, skipping SQL execution');
+        return;
+    }
+    
+    const sqlDirectory = path.join(getSourcePath(), 'sql');
+    const sqlFiles = getSortedSqlFiles(sqlDirectory);
+    
+    for (const sqlFile of sqlFiles) {
         try {
-            const schema = fs.readFileSync(schemaPath, 'utf-8');
-            await execute(schema);
+            console.log(`Executing SQL file: ${sqlFile}`);
+            const sqlContent = fs.readFileSync(sqlFile, 'utf-8');
+            await execute(sqlContent);
         } catch (error) {
-            console.error('Error reading or executing schema:', error);
+            console.error(`Error executing SQL file ${sqlFile}:`, error);
             throw error;
         }
     }
 };
 
-// The query methods would be modified to use better-sqlite3's syntax:
 const query = async <T>(sql: string, params: any[] = []): Promise<T[]> => {
     if (!database) throw new Error('Database not initialized');
     return database.prepare(sql).all(params) as T[];
@@ -84,7 +127,6 @@ const execute = async (sql: string): Promise<void> => {
     database.exec(sql);
 };
 
-// openbaar voor andere files
 export const databaseService = {
     initialize,
     query,

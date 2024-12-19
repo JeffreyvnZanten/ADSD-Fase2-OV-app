@@ -40,7 +40,6 @@ const startApplicationServer = async () => {
         // Handle graceful shutdown
         process.on('SIGTERM', () => {
             console.log('Shutting down server gracefully...');
-            // database.close();
             process.exit(0);
         });
         

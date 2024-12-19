@@ -1,17 +1,7 @@
 import { databaseService } from './database';
-import { Station, Platform } from './types';
+import { Station } from './types';
 
 export const ovRepository = {
-    addPlatformToStation: async (id: number, stationId: number, platformNumber: number): Promise<Platform[]> => {
-        const query = `
-            INSERT INTO platforms (id, station_id, platform_number)
-            RETURNING *;
-        `;
-        const values = [id, stationId, platformNumber];
-        return databaseService.query<Platform>(query, values);
-    },
-
-
         /**
      * Retrieves all stations from the database.
      * This function performs a full table scan of the stations table.
@@ -63,5 +53,11 @@ export const ovRepository = {
         databaseService.queryOne<Station>(
             'SELECT * FROM stations WHERE LOWER(code) = LOWER(?)',
             [stationsCode]
-        )
+        ),
+
+
+    // navigation steps
+    getAllNavigationSteps: async (): Promise<Station[]> => 
+        databaseService.query('SELECT * FROM navigation_steps'),
+
 };

@@ -40,60 +40,21 @@ export interface Station {
     city: string
 }
 
-export interface Platform {
-    
-    id: number
-
-    station_id: number
-
-    platform_number: string
-   
-}
-
-export interface Exit {
-
-    id: number
-
-    station_id: number
-    
-    exit_name: string
-
-}
-
 export interface navigation_step {
     
     id: number
     
     station_id: number
 
-    exit_id: number 
-
-    platform_id: number 
-
     step_number: number
 
     instruction_text: string
     
-    landmark_description: string
+    environment_description: string
     
     distance_meters: number
 
 } 
-
-
-export interface Journey {
-    
-    id: number
-
-    departure_platform_id: number
-
-    arrival_platform_id: number
-
-    departure_time: number
-
-    arrival_time: number
-
-}
 
 /**
  * RouteRequest Interface
