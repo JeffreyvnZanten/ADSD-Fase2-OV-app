@@ -28,8 +28,9 @@ import { idText } from "typescript"
  * }
  */
 export interface Station {
-    platform: any
-    exit: any
+    platform: string
+    
+    exit: string
     /** Unique number to identify each station */
     id: number
     /** Complete name of the station (e.g., "Amsterdam Centraal") */

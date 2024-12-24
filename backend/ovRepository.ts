@@ -1,5 +1,5 @@
 import { databaseService } from './database';
-import { Station } from './types';
+import { Station, navigation_step } from './types';
 
 export const ovRepository = {
         /**
@@ -57,7 +57,7 @@ export const ovRepository = {
 
 
     // navigation steps
-    getAllNavigationSteps: async (): Promise<Station[]> => 
+    getAllNavigationSteps: async (): Promise<navigation_step[]>=> 
         databaseService.query('SELECT * FROM navigation_steps'),
 
 };

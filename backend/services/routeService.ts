@@ -64,7 +64,7 @@ export const routeService = {
 
         const navigation_steps = await ovRepository.getAllNavigationSteps();
 
-        console.log("stappen" + navigation_steps);
+        console.log("stappen", navigation_steps);
     
         return {
             departure: departureStation.name,

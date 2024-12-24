@@ -2,7 +2,9 @@ CREATE TABLE IF NOT EXISTS stations (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
     code TEXT NOT NULL,
-    city TEXT NOT NULL
+    city TEXT NOT NULL,
+    exit TEXT NOT NULL,
+    platform TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS navigation_steps (

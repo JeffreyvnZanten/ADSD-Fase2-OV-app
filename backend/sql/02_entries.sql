@@ -1,7 +1,7 @@
 -- Stations
-INSERT INTO stations (id, name, code, city) VALUES
-(1, 'Station Amsterdam Centraal', 'AMS', 'Amsterdam'),
-(2, 'Station Rotterdam Centraal', 'RTD', 'Rotterdam');
+INSERT INTO stations (id, name, code, city, exit, platform) VALUES
+(1, 'Station Amsterdam Centraal', 'AMS', 'Amsterdam', 'Noord uitgang', 'platform 2'),
+(2, 'Station Rotterdam Centraal', 'RTD', 'Rotterdam', 'West uitgang', 'platform 3');
 
 -- De navigatie-instructies voor Amsterdam
 INSERT INTO navigation_steps (id, station_id, step_number, instruction_text, environment_description, distance_meters) VALUES
