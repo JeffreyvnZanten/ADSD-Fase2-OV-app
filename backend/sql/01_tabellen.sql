@@ -16,3 +16,15 @@ CREATE TABLE IF NOT EXISTS navigation_steps (
     distance_meters INTEGER,
     FOREIGN KEY (station_id) REFERENCES stations(id)
 );
+
+CREATE TABLE IF NOT EXISTS journeys (
+    id INTEGER PRIMARY KEY,
+    departure_time TEXT NOT NULL,
+    arrival_time TEXT NOT NULL,
+    departure_date TEXT NOT NULL,
+    arrival_date TEXT NOT NULL,
+    departure_station_id INTEGER NOT NULL,
+    arrival_station_id INTEGER NOT NULL,
+    FOREIGN KEY (departure_station_id) REFERENCES stations(id),
+    FOREIGN KEY (arrival_station_id) REFERENCES stations(id)
+);
