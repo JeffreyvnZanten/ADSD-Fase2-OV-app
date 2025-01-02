@@ -66,25 +66,28 @@ export default function StationSelector({
     const [error, setError] = useState<string | null>(null);
 
     // Programmer: Dempsey
-    // Filter voor stationwaardes op basis van array
+    // Filter stations based on stations array
     const handleLocalFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
         const inputValue = event.target.value;
         onChange(event);
 
-        // Filter stations op basis van de input
+        // Filter stations based on input
         const filteredSuggestions = stations
             .filter(station => station.city.toLowerCase().includes(inputValue.toLowerCase()))
             .map(station => station.city);
+
+        // Put it in a list of suggestions to show when typing
         setSuggestions(filteredSuggestions);
     }; 
 
     // Programmer: Jeffrey
-    // Filter voor stationswaardes op basis van query
+    // Query and filter stations based on input
     const handleQueryFilter = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const inputValue = event.target.value;
         onChange(event);
     
         try {
+            // API endpoint to search for stations by query
             const response = await fetch(
                 `${API_BASE_URL}/stations/search?query=${encodeURIComponent(inputValue)}`
             );
@@ -93,12 +96,15 @@ export default function StationSelector({
                 throw new Error('Search failed');
             }
     
-            const stations: Station[] = await response.json(); // Explicitly type as Station[]
+            // Put in an array of Station objects
+            const stations: Station[] = await response.json(); 
             
+            // Filter stations op basis van de input
             const filteredSuggestions = stations
                 .filter(station => station.city.toLowerCase().includes(inputValue.toLowerCase()))
                 .map(station => station.city);
                 
+            // Put it in a list of suggestions to show when typing
             setSuggestions(filteredSuggestions);
             
         } catch (err) {

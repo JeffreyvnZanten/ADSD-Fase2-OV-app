@@ -111,16 +111,3 @@ export interface ApiError {
     /** Description of what went wrong */
     error: string
 }
-
-export interface StationSearchResponse {
-    stations: Station[];
-    metadata: {
-        total: number;
-        query: string;
-    }
-}
-
-export interface StationSearchError {
-    error: string;
-    code: string;
-}

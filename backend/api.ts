@@ -1,6 +1,6 @@
 // api.ts
 import express, { Request, Response } from 'express';
-import { Station, Route, ApiError, RouteRequest, StationSearchResponse, StationSearchError } from './types';
+import { Station, Route, ApiError, RouteRequest } from './types';
 import { stationService } from './services/stationService';
 import { routeService } from './services/routeService';
 import { RouteNotFoundError } from './services/routeService';
