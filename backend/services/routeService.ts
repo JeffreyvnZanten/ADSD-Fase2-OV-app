@@ -6,7 +6,6 @@
 
 import { Route, RouteRequest, Station } from '../types';
 import { validateRouteRequest } from './routeValidator';
-import { stationRepository } from '../stationRepository';
 import { ovRepository } from '../ovRepository';
 import { databaseService } from '../database';
 
@@ -47,10 +46,10 @@ export const routeService = {
         request: RouteRequest
     ): Promise<Route> => {
         // Fetch station information from database
-        const departureStation = await stationRepository.getStationByCity(
+        const departureStation = await ovRepository.getStationByCity(
             request.departureStation
         );
-        const arrivalStation = await stationRepository.getStationByCity(
+        const arrivalStation = await ovRepository.getStationByCity(
             request.arrivalStation
         );
     

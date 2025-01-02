@@ -6,8 +6,7 @@
 import { useState, useEffect } from 'react';
 import { Station, Route } from '../../../backend/types';
 import { speak } from './useSpeak';
-
-const API_BASE_URL = 'http://localhost:4010/api';
+import { API_BASE_URL } from '../constants/urls';
 
 /**
  * Hook for managing OV application state and operations

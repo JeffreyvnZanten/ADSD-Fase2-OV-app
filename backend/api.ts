@@ -1,6 +1,6 @@
 // api.ts
 import express, { Request, Response } from 'express';
-import { Station, Route, ApiError, RouteRequest } from './types';
+import { Station, Route, ApiError, RouteRequest, StationSearchResponse, StationSearchError } from './types';
 import { stationService } from './services/stationService';
 import { routeService } from './services/routeService';
 import { RouteNotFoundError } from './services/routeService';
@@ -69,18 +69,18 @@ export const createApi = () => {
      * - 404: No stations found for city
      * - 500: Server error
      */
-    router.get('/stations/:city', async (req: Request, res: Response<Station | ApiError>) => {
-        try {
-            const station = await stationService.getStationByCity(req.params.city);
-            if (!station) {
-                res.status(404).json({ error: 'No station found for this city' });
-                return;
-            }
-            res.json(station);
-        } catch (error) {
-            res.status(500).json({ error: 'Failed to fetch station' });
-        }
-    });
+    // router.get('/stations/:city', async (req: Request, res: Response<Station | ApiError>) => {
+    //     try {
+    //         const station = await stationService.getStationByCity(req.params.city);
+    //         if (!station) {
+    //             res.status(404).json({ error: 'No station found for this city' });
+    //             return;
+    //         }
+    //         res.json(station);
+    //     } catch (error) {
+    //         res.status(500).json({ error: 'Failed to fetch station' });
+    //     }
+    // });
 
     /**
      * GET /api/route
@@ -121,6 +121,41 @@ export const createApi = () => {
                 return;
             }
             res.status(500).json({ error: 'Er is een fout opgetreden bij het berekenen van de route' });
+        }
+    });
+
+     /**
+     * GET /api/stations/search
+     * Zoekt stations op basis van een zoekterm
+     * 
+     * @param query - De zoekterm (minimaal 2 karakters)
+     * @returns Gefilterde lijst van stations
+     */
+     router.get('/stations/search', async (req: Request, res: Response<Station[] | { error: string }>) => {
+        try {
+            // Haal de query parameter op uit het request object
+            const query = req.query.query as string;
+            
+            // Voeg logging toe om te zien wat we ontvangen
+            console.log("Ontvangen zoekquery:", query);
+    
+            // Controleer of er een query is meegegeven
+            if (!query) {
+                return res.status(400).json({ error: 'Geen zoekterm opgegeven' });
+            }
+    
+            // Zoek de stations op basis van de query
+            const stations = await stationService.searchStations(query);
+            
+            // Log het resultaat
+            console.log("Gevonden stations:", stations);
+    
+            // Stuur het resultaat terug als een array van stations
+            return res.json(stations);
+        } catch (error) {
+            console.error("Error tijdens zoeken:", error);
+            // Stuur een error object terug
+            return res.status(500).json({ error: 'Er is een fout opgetreden tijdens het zoeken' });
         }
     });
 
