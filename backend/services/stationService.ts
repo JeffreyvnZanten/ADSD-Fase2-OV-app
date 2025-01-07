@@ -1,6 +1,6 @@
 // services/station.service.ts
 import { Station } from '../types';
-import { stationRepository } from '../stationRepository';
+import { ovRepository } from '../ovRepository';
 
 /**
  * Service layer for station-related operations
@@ -13,7 +13,7 @@ export const stationService = {
      * @returns {Promise<Station[]>} Array of all stations
      */
     getAllStations: async (): Promise<Station[]> => 
-        stationRepository.getAllStations(),
+        ovRepository.getAllStations(),
 
     /**
      * Retrieves station for a specific city
@@ -21,5 +21,16 @@ export const stationService = {
      * @returns {Promise<Station | null>} Station in the specified city or null if not found
      */
     getStationByCity: async (city: string): Promise<Station | null> =>
-        stationRepository.getStationByCity(city)
+        ovRepository.getStationByCity(city),
+
+    /**
+     * Searches stations based on input text
+     * @param query - Search text to filter stations
+     * @returns Filtered list of stations
+     */
+    searchStations: async (query: string): Promise<Station[]> => {
+        const callback = ovRepository.searchStations(query);
+
+        return callback;
+    }
 };

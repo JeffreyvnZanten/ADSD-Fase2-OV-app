@@ -55,9 +55,25 @@ export const ovRepository = {
             [stationsCode]
         ),
 
-
     // navigation steps
     getAllNavigationSteps: async (): Promise<navigation_step[]>=> 
         databaseService.query('SELECT * FROM navigation_steps'),
 
+    /**
+     * Performs database search for stations
+     * @param query - Search text to match against city names
+     * @returns Matching stations from database
+     */
+    searchStations: async (query: string): Promise<Station[]> => {
+        const searchPattern = `%${query}%`;
+        
+        const result = databaseService.query<Station>(
+            `SELECT * FROM stations 
+             WHERE LOWER(city) LIKE LOWER(?) 
+             LIMIT 10`,
+            [searchPattern]
+        );
+
+        return result;
+    },
 };

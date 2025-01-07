@@ -50,7 +50,7 @@ function OVApp() {
     // Play introduction audio once when component mounts
     useEffect(() => {
         if (!hasPlayedRef.current) {
-            speak(intro);
+            // speak(intro);
             hasPlayedRef.current = true;
         }
     }, []); // Empty dependency array means this runs once on mount
