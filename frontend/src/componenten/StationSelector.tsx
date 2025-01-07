@@ -14,7 +14,7 @@
  *   label="Departure Station"
  *   value={selectedStation}
  *   stations={availableStations}
- *   onChange={handleChange}
+ *   onChange={handleQueryFilter}
  *   tabindex={1}
  * />
  */
@@ -65,7 +65,6 @@ export default function StationSelector({
     const [suggestions, setSuggestions] = useState<string[]>([]);
     const [error, setError] = useState<string | null>(null);
 
-    // Programmer: Dempsey
     // Filter stations based on stations array
     const handleLocalFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
         const inputValue = event.target.value;
@@ -80,7 +79,6 @@ export default function StationSelector({
         setSuggestions(filteredSuggestions);
     }; 
 
-    // Programmer: Jeffrey
     // Query and filter stations based on input
     const handleQueryFilter = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const inputValue = event.target.value;
@@ -113,7 +111,6 @@ export default function StationSelector({
         }
     };
 
-    // Programmer: Dempsey
     // Renders the HTML and data of this component
     return (
         <div className='downunder'>

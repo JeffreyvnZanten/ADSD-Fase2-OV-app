@@ -1,10 +1,12 @@
 // routeValidator.ts
+
 import { RouteRequest, Station } from '../types';
 
 /**
  * Custom error class for route validation failures
  * Extends the standard Error class to provide validation-specific error handling
  */
+
 export class ValidationError extends Error {
     /**
      * Creates a new ValidationError instance
@@ -40,7 +42,7 @@ export function validateRouteRequest(
         throw new ValidationError('Het vertrek- en aankomststation kunnen niet hetzelfde zijn');
     }
 
-    // Check if stations exist in database
+    // Check if stations exist are having a value
     if (!departureStation || !arrivalStation) {
         throw new ValidationError('Selecteer eerst een vertrek- en aankomststation');
     }

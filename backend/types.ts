@@ -5,15 +5,6 @@
  * This file contains all the TypeScript interfaces that define the shape of our data.
  * These types are used throughout both frontend and backend to ensure data consistency.
  * 
- * Key Concepts:
- * - Interface: A TypeScript way to define the structure of an object
- * - Export: Makes these types available to other files
- * - Optional properties: Marked with ? (not used here but good to know)
- */
-
-import { idText } from "typescript"
-
-/**
  * Station Interface
  * Represents a train station with all its properties
  * 
@@ -28,9 +19,6 @@ import { idText } from "typescript"
  * }
  */
 export interface Station {
-    platform: string
-    
-    exit: string
     /** Unique number to identify each station */
     id: number
     /** Complete name of the station (e.g., "Amsterdam Centraal") */
@@ -39,6 +27,10 @@ export interface Station {
     code: string
     /** City where the station is located */
     city: string
+    /** Platform where the train departs */
+    platform: string
+    // Where tot go to exit the station
+    exit: string
 }
 
 export interface navigation_step {

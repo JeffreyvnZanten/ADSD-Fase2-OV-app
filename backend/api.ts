@@ -9,16 +9,6 @@ import { ValidationError } from './services/routeValidator';
 /**
  * API Route Definitions
  * 
- * This file defines all REST API endpoints for the OV application.
- * It uses Express.js for routing and handles all HTTP requests.
- * 
- * API Structure:
- * - GET /stations: Retrieve all stations
- * - GET /stations/:city: Get stations for a specific city
- * - GET /route: Calculate route between two stations
- * 
- * Creates and configures the Express router
- * 
  * @param {Database} db - SQLite database connection
  * @returns {express.Router} Configured Express router with all endpoints
  * 
@@ -27,6 +17,7 @@ import { ValidationError } from './services/routeValidator';
  * 2. Defines all API endpoints
  * 3. Implements error handling for each route
  */
+
 export const createApi = () => {
     const router = express.Router();
 
@@ -37,17 +28,8 @@ export const createApi = () => {
      * Response:
      * - Success: Array of Station objects
      * - Error: ApiError object with status 500
-     * 
-     * Example Response:
-     * [
-     *   {
-     *     "id": 1,
-     *     "name": "Amsterdam Centraal",
-     *     "code": "AMS",
-     *     ...
-     *   }
-     * ]
      */
+
     router.get('/stations', async (_req: Request, res: Response<Station[] | ApiError>) => {
         try {
             const stations = await stationService.getAllStations();
@@ -56,31 +38,6 @@ export const createApi = () => {
             res.status(500).json({ error: 'Failed to fetch stations' });
         }
     });
-
-    /**
-     * GET /api/stations/:city
-     * Retrieves all stations for a specific city
-     * 
-     * URL Parameters:
-     * - city: Name of the city to search for
-     * 
-     * Response Codes:
-     * - 200: Stations found
-     * - 404: No stations found for city
-     * - 500: Server error
-     */
-    // router.get('/stations/:city', async (req: Request, res: Response<Station | ApiError>) => {
-    //     try {
-    //         const station = await stationService.getStationByCity(req.params.city);
-    //         if (!station) {
-    //             res.status(404).json({ error: 'No station found for this city' });
-    //             return;
-    //         }
-    //         res.json(station);
-    //     } catch (error) {
-    //         res.status(500).json({ error: 'Failed to fetch station' });
-    //     }
-    // });
 
     /**
      * GET /api/route
@@ -97,8 +54,9 @@ export const createApi = () => {
      * - 500: Server error
      * 
      * Example Request:
-     * GET /api/route?departureStation=Amsterdam&arrivalStation=Rotterdam
+     * GET localhost:4010/api/route?departureStation=Amsterdam&arrivalStation=Rotterdam
      */
+    
     router.get('/route', async (
         req: Request<{}, {}, {}, RouteRequest>, 
         res: Response<Route | ApiError>
@@ -125,36 +83,36 @@ export const createApi = () => {
     });
 
      /**
-     * GET /api/stations/search
-     * Zoekt stations op basis van een zoekterm
+     * GET /api/stations/search 
+     * Searches stations based on query
      * 
-     * @param query - De zoekterm (minimaal 2 karakters)
-     * @returns Gefilterde lijst van stations
+     * @param query - The query (2 characters minimum)
+     * @returns Filtered list of stations
      */
      router.get('/stations/search', async (req: Request, res: Response<Station[] | { error: string }>) => {
         try {
-            // Haal de query parameter op uit het request object
+            // Get the query parameter from the request object
             const query = req.query.query as string;
             
-            // Voeg logging toe om te zien wat we ontvangen
+            // inject the logging to see what we receive
             console.log("Ontvangen zoekquery:", query);
     
-            // Controleer of er een query is meegegeven
+            // cheks if there is a query
             if (!query) {
                 return res.status(400).json({ error: 'Geen zoekterm opgegeven' });
             }
     
-            // Zoek de stations op basis van de query
+            // looks for stations based on the query
             const stations = await stationService.searchStations(query);
             
-            // Log het resultaat
+            // shows the result in the console 
             console.log("Gevonden stations:", stations);
     
-            // Stuur het resultaat terug als een array van stations
+            // Send the result back as an array of stations
             return res.json(stations);
         } catch (error) {
             console.error("Error tijdens zoeken:", error);
-            // Stuur een error object terug
+            // sends an error object back
             return res.status(500).json({ error: 'Er is een fout opgetreden tijdens het zoeken' });
         }
     });

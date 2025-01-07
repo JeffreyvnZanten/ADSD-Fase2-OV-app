@@ -2,7 +2,7 @@ import { databaseService } from './database';
 import { Station, navigation_step } from './types';
 
 export const ovRepository = {
-        /**
+     /**
      * Retrieves all stations from the database.
      * This function performs a full table scan of the stations table.
      * 
@@ -13,6 +13,7 @@ export const ovRepository = {
      * const stations = await stationRepository.getAllStations();
      * console.log(stations); // [{id: 1, name: 'Central Station', ...}, ...]
      */
+
     getAllStations: async (): Promise<Station[]> => 
         databaseService.query<Station>('SELECT * FROM stations'),
 
@@ -25,39 +26,21 @@ export const ovRepository = {
      *          or null if no station exists in the specified city
      * 
      * @example
-     * const station = await stationRepository.getStationByCity('New York');
+     * const station = await stationRepository.getStationByCity('Amsterdam');
      * if (station) {
      *     console.log(station.name);
      * }
      */
+    
     getStationByCity: async (city: string): Promise<Station | null> =>
         databaseService.queryOne<Station>(
             'SELECT * FROM stations WHERE LOWER(city) = LOWER(?)',
             [city.trim()]
         ),
 
-    /**
-     * Retrieves a station by its unique station code using a case-insensitive search.
-     * 
-     * @param stationsCode - The unique identifier code of the station
-     * @returns A Promise that resolves to a Station object if found,
-     *          or null if no station matches the provided code
-     * 
-     * @example
-     * const station = await stationRepository.getStationByCode('NYC001');
-     * if (station) {
-     *     console.log(station.name);
-     * }
-     */
-    getStationByCode: async (stationsCode: string): Promise<Station | null> =>
-        databaseService.queryOne<Station>(
-            'SELECT * FROM stations WHERE LOWER(code) = LOWER(?)',
-            [stationsCode]
-        ),
-
-    // navigation steps
-    getAllNavigationSteps: async (): Promise<navigation_step[]>=> 
-        databaseService.query('SELECT * FROM navigation_steps'),
+    // navigation steps is under contruction for now future use for showing the steps to the user
+    // getAllNavigationSteps: async (): Promise<navigation_step[]>=> 
+    //     databaseService.query('SELECT * FROM navigation_steps'),
 
     /**
      * Performs database search for stations

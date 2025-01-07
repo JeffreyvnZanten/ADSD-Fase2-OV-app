@@ -12,7 +12,6 @@ import useOvApp from './hooks/useOvApp';
 import StationSelector from './componenten/StationSelector';
 import RouteDisplay from './componenten/RouteDisplay';
 import ErrorDisplay from './componenten/ErrorDisplay';
-import { speak } from './hooks/useSpeak';
 import './styles/tab.css';
 
 /**

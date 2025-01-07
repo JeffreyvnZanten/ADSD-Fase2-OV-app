@@ -4,24 +4,18 @@ import { createApi } from './api';
 import cors from 'cors';
 import { databaseService } from './database';
 
-/**
- * Main application server that initializes and coordinates all components.
- * Handles server startup, middleware configuration, and API route setup.
- * Ensures proper database initialization before starting the HTTP server.
- */
 
 /**
  * Initializes and starts the application server.
  * Coordinates the startup sequence including database setup,
  * middleware configuration, and HTTP server initialization.
  */
+
 const startApplicationServer = async () => {
     const app = express();
     
     try {
         // Initialize database connection and schema
-        // const database = await connectToDatabase();
-        // await setupDatabaseSchema(database);
         await databaseService.initialize();
         
         // Configure middleware

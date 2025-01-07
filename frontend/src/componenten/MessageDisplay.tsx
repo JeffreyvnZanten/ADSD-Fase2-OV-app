@@ -18,21 +18,21 @@ export default function MessageDisplay({
 }: MessageDisplayProps) {
     const contentArray = normalizeContent(content);
     
-    // We gebruiken een unieke key om React en de screenreader te vertellen
-    // dat dit een volledig nieuw element is
+    // We use a unique key to tell React and the screenreader
+    // This is a completely new element
     const uniqueKey = `message-${Date.now()}`;
 
     return (
         <div 
-            // De key zorgt ervoor dat React het element opnieuw opbouwt
+            // The key tells React to rebuild the element
             key={uniqueKey}
             className={`message-display ${type}`}
-            // We gebruiken zowel role als aria-live om de screenreader te informeren
+            // We use both role and aria-live to inform the screenreader
             role="alert"
             aria-live="assertive"
-            // Dit zorgt ervoor dat de hele boodschap wordt voorgelezen
+            // This makes sure the whole message gets told by the screenreader
             aria-atomic="true"
-            // Dit vertelt de screenreader dat dit belangrijke informatie is
+            // This tells the screenreader it's important information
             aria-relevant="additions text"
         >
             {title && <h2>{title}</h2>}

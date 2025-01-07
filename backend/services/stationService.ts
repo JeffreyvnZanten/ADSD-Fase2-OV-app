@@ -1,4 +1,5 @@
 // services/station.service.ts
+
 import { Station } from '../types';
 import { ovRepository } from '../ovRepository';
 
@@ -14,14 +15,6 @@ export const stationService = {
      */
     getAllStations: async (): Promise<Station[]> => 
         ovRepository.getAllStations(),
-
-    /**
-     * Retrieves station for a specific city
-     * @param {string} city - City name to search for
-     * @returns {Promise<Station | null>} Station in the specified city or null if not found
-     */
-    getStationByCity: async (city: string): Promise<Station | null> =>
-        ovRepository.getStationByCity(city),
 
     /**
      * Searches stations based on input text
