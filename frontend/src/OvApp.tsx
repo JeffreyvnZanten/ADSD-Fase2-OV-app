@@ -5,24 +5,11 @@
  * It provides a user interface for selecting stations and viewing travel routes,
  * with special focus on accessibility for visually impaired users.
  * 
- * Key Concepts:
- * - Custom Hooks: Uses useOvApp for state management
- * - Accessibility: Built-in screen reader support
- * - Component Composition: Combines multiple smaller components
- * - useRef & useEffect: For managing one-time audio introduction
- * 
- * Component Structure:
- * - Header
- * - Departure Station Selector
- * - Arrival Station Selector
- * - Action Buttons (Generate Route & Reset)
- * - Route Description (when available)
  */
 
 import React, { useState ,useRef, useEffect } from 'react';
 import useOvApp from './hooks/useOvApp'; 
 import StationSelector from './componenten/StationSelector';
-// import RouteDescription from './componenten/RouteDescription';
 import RouteDisplay from './componenten/RouteDisplay';
 import ErrorDisplay from './componenten/ErrorDisplay';
 import { speak } from './hooks/useSpeak';
@@ -39,6 +26,7 @@ import './styles/tab.css';
  * 3. Renders station selectors and route information
  * 4. Provides keyboard navigation support
  */
+
 function OVApp() {
     // Get all state and handlers from our custom hook
     const {
@@ -96,18 +84,27 @@ function OVApp() {
                 <button 
                     tabIndex={0} 
                     onClick={handleGetRoute}
-                    role="none"
                     aria-label="Genereer route"
                 >
                     Genereer Route
                 </button>
             </div>
 
-            {/* Conditional rendering of route information */}
-            {error && <ErrorDisplay message={error} />}
+            <table>
+                <tbody>
+                    {error && (
+                        <tr>
+                            <td  tabIndex={0}><ErrorDisplay message={error} /></td>
+                        </tr>
+                    )}
+                    {route && (
+                        <tr>
+                            <td tabIndex={0}><RouteDisplay route={route} /></td>
+                        </tr>
+                    )}
+                </tbody>
+            </table>
 
-            {/* Conditional rendering of route information */}
-            {route && <RouteDisplay route={route} />}
         </div>
     );
 }

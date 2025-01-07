@@ -5,11 +5,6 @@
  * 1. Setting up the React environment
  * 2. Finding the root DOM element
  * 3. Rendering the main application component
- * 
- * Key Concepts:
- * - ReactDOM.createRoot: Modern way to render React apps (React 18+)
- * - StrictMode: Development tool that highlights potential problems
- * - Root element: The main DOM element where React will render the app
  */
 
 import React from 'react';
