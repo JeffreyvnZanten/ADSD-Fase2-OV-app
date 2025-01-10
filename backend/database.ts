@@ -5,18 +5,22 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { readdirSync } from 'fs';
 
+// check if the database is initialized and set it to null if it is not
 let database: Database | null = null;
 
+// this function will get the path to the backend folder
 const getSourcePath = () => {
     return path.resolve(__dirname, '..', 'backend');
 };
 
+// this function will get the path to the sqlite database
 const getDatabasePath = (): string => {
     const projectRoot = path.resolve(__dirname, '..');
     const dbFolder = path.join(projectRoot, 'data');
     return path.join(dbFolder, 'sqlite.db');
 };
 
+// this function will read all the sql files in the sql directory
 const getSqlFiles = (directory: string): string[] => {
     try {
         return readdirSync(directory)
@@ -28,6 +32,7 @@ const getSqlFiles = (directory: string): string[] => {
     }
 };
 
+// this function will sort the sql files in the sql directory by name of the file
 const getSortedSqlFiles = (directory: string): string[] => {
     return getSqlFiles(directory).sort((a, b) => {
         const fileA = path.basename(a);
@@ -36,6 +41,7 @@ const getSortedSqlFiles = (directory: string): string[] => {
     });
 };
 
+// this function will initialize the database with a try catch block to handle any errors
 const initialize = async (): Promise<void> => {
     if (!database) {
         const dbPath = getDatabasePath();
@@ -55,6 +61,7 @@ const initialize = async (): Promise<void> => {
     }
 };
 
+//  checks if table a name is empty
 const isTableEmpty = async (tableName: string): Promise<boolean> => {
     if (!database) throw new Error('Database not initialized');
     
@@ -73,8 +80,9 @@ const getAllTableNames = async (): Promise<string[]> => {
     );
     
     return tables.map(table => table.name);
-};
 
+};
+// This function will check if all tables are empty
 const areAllTablesEmpty = async (): Promise<boolean> => {
     const tableNames = await getAllTableNames();
     
@@ -87,6 +95,7 @@ const areAllTablesEmpty = async (): Promise<boolean> => {
     return true;
 };
 
+// This function will execute all the sql files in the sql directory
 const setupSchema = async (): Promise<void> => {
     if (!database) throw new Error('Database not initialized');
     
@@ -112,16 +121,22 @@ const setupSchema = async (): Promise<void> => {
     }
 };
 
+
+// The query function takes an sql query string and an optional array of parameters using generics to define the return type
 const query = async <T>(sql: string, params: any[] = []): Promise<T[]> => {
     if (!database) throw new Error('Database not initialized');
+    //  securtiy measure to prevent sql injection trough the query prepared statement
     return database.prepare(sql).all(params) as T[];
 };
 
+// Defines a query object that processes one query and returns the result as an object
 const queryOne = async <T>(sql: string, params: any[] = []): Promise<T | null> => {
     if (!database) throw new Error('Database not initialized');
+    //  securtiy measure to prevent sql injection trough the query prepared statement 
     return database.prepare(sql).get(params) as T | null;
 };
 
+// the execute function takes an sql query string and executes it without returning any result
 const execute = async (sql: string): Promise<void> => {
     if (!database) throw new Error('Database not initialized');
     database.exec(sql);
@@ -133,3 +148,10 @@ export const databaseService = {
     queryOne,
     execute
 };
+
+// What is prepare in database.prepare(sql).get(params) as T[] op regel 129;
+// security measure to prevent sql injection trough the query prepared statement explained
+// The key security aspect is that the data you pass in can NEVER change the structure of the original SQL query because:
+// The database engine treats the placeholder value as pure data, not as SQL code
+// The SQL is already compiled before any user input is received
+// The parameter binding happens at a lower level in the database engine, after SQL parsing

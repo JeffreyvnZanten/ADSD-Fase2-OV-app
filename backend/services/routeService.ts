@@ -46,7 +46,7 @@ export const routeService = {
         );
     
         // Validate request parameters including station existence
-        validateRouteRequest(request, departureStation, arrivalStation);
+        validateRouteRequest(request);
     
         // TypeScript null check safeguard
         if (!departureStation || !arrivalStation) {

@@ -57,8 +57,8 @@ function OVApp() {
     return (
         <div className='box-1'>
             {/* Main application title */}
-            <h1   tabIndex={1} aria-label='"Deze website is geoptimaliseerd voor blinde mensen. Je kan het volgende element selecteren met de tab-toets en teruggaan met shift-tab.   Met enter selecteer je een element. En met f7 hoor je deze instructies opnieuw.";'>OV Stations Selector</h1>
-
+            <h1   tabIndex={1} aria-label='"Deze website is geoptimaliseerd voor blinde mensen. Je kan het volgende element selecteren met de tab-toets en teruggaan met shift-tab.  Met enter selecteer je een element";'>OV Stations Selector</h1>
+            <p  tabIndex={1}   aria-label="Waneer je het station aan het invoeren bent zal er een uitklap menu komen waar je met de pijltoesten door heen kan en met enter kan selecteren"></p>
             {/* Departure station dropdown */}
             <StationSelector
                 label="Vertrekstation: voer hier je station in"

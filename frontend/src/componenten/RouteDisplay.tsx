@@ -2,6 +2,7 @@ import React from 'react';
 import MessageDisplay from './MessageDisplay';
 import { Route } from '../../../backend/types';
 
+// Define the props for the RouteDisplay component
 interface RouteDisplayProps {
     route: Route;
 }
@@ -12,6 +13,7 @@ const formatRouteMessage = (route: Route): string => {
     return `Route van ${route.departure} naar ${route.arrival}. ${steps.join('. ')}`;
 };
 
+// Define the RouteDisplay component
 export default function RouteDisplay({ route }: RouteDisplayProps) {
     const message = formatRouteMessage(route);
     
