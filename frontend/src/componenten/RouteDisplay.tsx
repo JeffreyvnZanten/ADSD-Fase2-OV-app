@@ -1,6 +1,6 @@
 import React from 'react';
 import MessageDisplay from './MessageDisplay';
-import { Route } from '../../../backend/types';
+import { Route } from '../../../shared/types';
 
 // Define the props for the RouteDisplay component
 interface RouteDisplayProps {

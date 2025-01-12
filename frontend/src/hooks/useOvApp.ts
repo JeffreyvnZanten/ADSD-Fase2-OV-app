@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect } from 'react';
-import { Station, Route } from '../../../backend/types';
+import { Station, Route } from '../../../shared/types';
 import { API_BASE_URL } from '../constants/urls';
 
 /**
@@ -85,8 +85,8 @@ function useOvApp() {
             
             if (!response.ok) {
                 const errorData = await response.json();
-                setError(errorData.error); // Gebruik de error message van de API
-                return; // Stop verder uitvoeren
+                setError(errorData.error); 
+                return; 
             }
      
             const data: Route = await response.json();

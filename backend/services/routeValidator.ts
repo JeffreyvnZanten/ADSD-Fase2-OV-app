@@ -1,6 +1,6 @@
 // routeValidator.ts
 
-import { RouteRequest, Station } from '../types';
+import { RouteRequest, Station } from '../../shared/types';
 
 /**
  * Custom error class for route validation failures

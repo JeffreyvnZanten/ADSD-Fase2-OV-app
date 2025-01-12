@@ -1,5 +1,5 @@
 import { databaseService } from './database';
-import { Station, navigation_step } from './types';
+import { Station, navigation_step } from '../shared/types';
 
 export const ovRepository = {
      /**

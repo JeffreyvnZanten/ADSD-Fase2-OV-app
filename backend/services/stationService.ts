@@ -1,6 +1,6 @@
 // services/station.service.ts
 
-import { Station } from '../types';
+import { Station } from '../../shared/types';
 import { ovRepository } from '../ovRepository';
 
 /**

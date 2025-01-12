@@ -20,7 +20,7 @@
  */
 
 import React, { useState } from 'react';
-import { Station } from '../../../backend/types';
+import { Station } from '../../../shared/types';
 import { API_BASE_URL } from '../constants/urls';
 
 /**

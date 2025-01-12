@@ -4,7 +4,7 @@
  * Handles business logic for generating travel routes between stations
  */
 
-import { Route, RouteRequest, Station } from '../types';
+import { Route, RouteRequest, Station } from '../../shared/types';
 import { validateRouteRequest } from './routeValidator';
 import { ovRepository } from '../ovRepository';
 import { databaseService } from '../database';
