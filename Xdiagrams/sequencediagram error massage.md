@@ -1,11 +1,12 @@
 ```mermaid
 sequenceDiagram
     participant User
-    participant OVApp
+    participant OVApp 
+    participant ErrorDisplay
     participant useOvApp
     participant API
-    participant RouteService
-    participant ErrorDisplay
+    participant routeService
+    participant routeValidator
 
     User->>OVApp: Ongeldige route aanvraag
     activate OVApp
@@ -13,10 +14,12 @@ sequenceDiagram
     activate useOvApp
     useOvApp->>API: GET /api/route
     activate API
-    API->>RouteService: calculateRoute()
-    activate RouteService
-    RouteService-->>API: Throws RouteNotFoundError
-    deactivate RouteService
+    API->>routeService: calculateRoute()
+    routeService->>routeValidator: ValidateRouteRequest()
+    routeValidator->>routeService: Throw ValidationError
+    activate routeService
+    routeService-->>API: Throws ValidationError
+    deactivate routeService
     API-->>useOvApp: Error response (400/404/500)
     useOvApp->>useOvApp: setError(errorMessage)
     useOvApp-->>OVApp: Update UI
