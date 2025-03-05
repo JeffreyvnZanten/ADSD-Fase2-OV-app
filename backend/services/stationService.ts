@@ -11,16 +11,16 @@ import { ovRepository } from '../ovRepository';
 export const stationService = {
     /**
      * Retrieves all stations from the database
-     * @returns {Promise<Station[]>} Array of all stations
+     * @returns {Promise<Station[]>} Array of all station
      */
+    
     getAllStations: async (): Promise<Station[]> => 
         ovRepository.getAllStations(),
 
     /**
-     * Searches stations based on input text
-     * @param query - Search text to filter stations
-     * @returns Filtered list of stations
-     */
+    * Searches stations based on a search query
+    */
+
     searchStations: async (query: string): Promise<Station[]> => {
         const callback = ovRepository.searchStations(query);
 

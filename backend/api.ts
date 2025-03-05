@@ -9,9 +9,6 @@ import { ValidationError } from './services/routeValidator';
 /**
  * API Route Definitions
  * 
- * @param {Database} db - SQLite database connection
- * @returns {express.Router} Configured Express router with all endpoints
- * 
  * Implementation Details:
  * 1. Creates new Express router instance
  * 2. Defines all API endpoints
@@ -42,10 +39,6 @@ export const createApi = () => {
     /**
      * GET /api/route
      * Calculates a route between two stations
-     * 
-     * Query Parameters:
-     * - departureStation: Name of departure city
-     * - arrivalStation: Name of arrival city
      * 
      * Response Codes:
      * - 200: Route calculated successfully
@@ -85,9 +78,6 @@ export const createApi = () => {
      /**
      * GET /api/stations/search 
      * Searches stations based on query
-     * 
-     * @param query - The query (2 characters minimum)
-     * @returns Filtered list of stations
      */
      router.get('/stations/search', async (req: Request, res: Response<Station[] | { error: string }>) => {
         try {

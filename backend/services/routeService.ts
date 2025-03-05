@@ -16,7 +16,6 @@ import { databaseService } from '../database';
 export class RouteNotFoundError extends Error {
     /**
      * Creates a new RouteNotFoundError object
-     * @param message - The error message describing why the route couldn't be found
      */
     constructor(message: string) {
         super(message);
@@ -26,14 +25,15 @@ export class RouteNotFoundError extends Error {
 
 /**
  * Service object containing route calculation functionality
+ * 
+ * REFACTOR THIS TO ONE FUNCTION INSTEAD OF AN OBJECT AND FUNCTION
  */
+
 export const routeService = {
     /**
      * Calculates a travel route between two stations
-     * @param request - Route request containing departure and arrival stations
-     * @returns Promise resolving to a Route object with step-by-step instructions
-     * @throws {RouteNotFoundError} When stations cannot be found or no route exists
      */
+    
     calculateRoute: async (
         request: RouteRequest
     ): Promise<Route> => {
@@ -52,9 +52,6 @@ export const routeService = {
         if (!departureStation || !arrivalStation) {
             throw new RouteNotFoundError('Stations niet gevonden');  // This should never happen due to validation on line 49
         }
-
-        // This function retrieves the navigation steps in the database
-        // const navigation_steps = await ovRepository.getAllNavigationSteps();
 
         return {
             departure: departureStation.name,

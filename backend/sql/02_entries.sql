@@ -1,34 +1,68 @@
 -- Stations
-INSERT INTO stations (id, name, code, city, exit, platform) VALUES
-(1, 'Station Amsterdam Centraal', 'AMS', 'Amsterdam', 'Noord uitgang', 'platform 2'),
-(2, 'Station Rotterdam Centraal', 'RTD', 'Rotterdam', 'West uitgang', 'platform 3'),
-(3, 'Station Utrecht Centraal', 'UTC', 'Utrecht', 'Zuid uitgang', 'platform 5'),
-(4, 'Station Den Haag Centraal', 'GVC', 'Den Haag', 'Noord uitgang', 'platform 4'),
-(5, 'Station Eindhoven Centraal', 'EHV', 'Eindhoven', 'Oost uitgang', 'platform 1'),
-(6, 'Station Groningen', 'GN', 'Groningen', 'West uitgang', 'platform 2');
+INSERT INTO stations (id, name, city, has_assistance, accessibility_info) VALUES
+(1, 'Amsterdam Centraal', 'Amsterdam', true, 'Liften bij alle perrons, geleidelijn aanwezig'),
+(2, 'Rotterdam Centraal', 'Rotterdam', true, 'Liften en roltrappen beschikbaar, geleidelijn door hele station'),
+(3, 'Utrecht Centraal', 'Utrecht', true, 'Liften bij alle perrons, geleidelijnen en Audio instructiess'),
+(4, 'Den Haag Centraal', 'Den Haag', true, 'Liften en roltrappen, geleidelijn door centrale hal'),
+(5, 'Eindhoven Centraal', 'Eindhoven', true, 'Liften bij alle perrons, tactiele geleidelijnen'),
+(6, 'Groningen', 'Groningen', true, 'Liften en geleidelijn beschikbaar'),
+(7, 'Tilburg', 'Tilburg', true, 'Liften en geleidelijn beschikbaar'),
+(8, 'Almere Centraal', 'Almere', true, 'Liften en geleidelijn beschikbaar'),
+(9, 'Breda', 'Breda', true, 'Liften en geleidelijn beschikbaar'),
+(10, 'Nijmegen', 'Nijmegen', true, 'Liften en geleidelijn beschikbaar'),
+(11, 'Enschede', 'Enschede', true, 'Liften en geleidelijn beschikbaar'),
+(12, 'Apeldoorn', 'Apeldoorn', true, 'Liften en geleidelijn beschikbaar'),
+(13, 'Haarlem', 'Haarlem', true, 'Liften en geleidelijn beschikbaar'),
+(14, 'Arnhem Centraal', 'Arnhem', true, 'Liften en geleidelijn beschikbaar'),
+(15, 'Zaandam', 'Zaandam', true, 'Liften en geleidelijn beschikbaar');
 
-INSERT INTO journeys (id, departure_time, arrival_time, departure_date, arrival_date, departure_station_id, arrival_station_id) VALUES
-(1, '10:00', '11:00', '2024-12-25', '2024-12-25', 1, 2),
-(2, '10:00', '11:00', '2024-12-25', '2024-12-25', 2, 1),
-(3, '08:30', '09:45', '2024-12-25', '2024-12-25', 3, 4),
-(4, '12:15', '13:30', '2024-12-25', '2024-12-25', 4, 3),
-(5, '09:00', '10:30', '2024-12-25', '2024-12-25', 5, 6),
-(6, '11:45', '13:15', '2024-12-25', '2024-12-25', 6, 5),
-(7, '14:00', '15:15', '2024-12-25', '2024-12-25', 1, 3),
-(8, '15:30', '16:45', '2024-12-25', '2024-12-25', 3, 1),
-(9, '13:00', '14:30', '2024-12-25', '2024-12-25', 2, 5),
-(10, '16:00', '17:30', '2024-12-25', '2024-12-25', 5, 2);
+INSERT INTO platforms (id, station_id, number, location_description, has_tactile_paving, audio_beacon_info) VALUES
+(1, 1, '2A', 'Centraal in station, bereikbaar via lift A', true, 'Audio instructies bij liftingang'),
+(2, 2, '3', 'Noordzijde station, via centrale hal', true, 'Audio instructies bij perrontoegang'),
+(3, 3, '5', 'Zuidzijde, bereikbaar via traverse', true, 'Audio instructies bij trapopgang'),
+(4, 4, '4', 'Centraal perron, via hoofdhal', true, 'Audio instructies bij perroningang'),
+(5, 5, '1', 'Direct vanaf stationshal', true, 'Audio instructies bij toegangspoortjes'),
+(6, 6, '2', 'Westzijde station', true, 'Audio instructies bij perrontoegang'),
+(7, 7, '1', 'Centraal perron', true, 'Audio instructies beschikbaar'),
+(8, 8, '1', 'Centraal perron', true, 'Audio instructies beschikbaar'),
+(9, 9, '1', 'Centraal perron', true, 'Audio instructies beschikbaar'),
+(10, 10, '1', 'Centraal perron', true, 'Audio instructies beschikbaar'),
+(11, 11, '1', 'Centraal perron', true, 'Audio instructies beschikbaar'),
+(12, 12, '1', 'Centraal perron', true, 'Audio instructies beschikbaar'),
+(13, 13, '1', 'Centraal perron', true, 'Audio instructies beschikbaar'),
+(14, 14, '1', 'Centraal perron', true, 'Audio instructies beschikbaar'),
+(15, 15, '1', 'Centraal perron', true, 'Audio instructies beschikbaar');
 
--- De navigatie-instructies voor Amsterdam
-INSERT INTO navigation_steps (id, station_id, step_number, instruction_text, environment_description, distance_meters) VALUES
-(1, 1, 1, 'Loop vanaf hoofdingang rechtdoor naar de poortjes', 'Draaideur geluid achter je, geribbelde tegels', 10),
-(2, 1, 2, 'Ga door de poortjes', 'Piep van de poortjes', 2),
-(3, 1, 3, 'Loop rechtdoor naar centrale hal', 'Piano links, Starbucks rechts', 15),
-(4, 1, 4, 'Draai rechtsaf bij de T-splitsing', 'Kruising in geribbelde tegels', 0),
-(5, 1, 5, 'Loop naar de liften', 'Geluid van roltrappen', 20);
+INSERT INTO routes (id, departure_station_id, arrival_station_id, departure_time, arrival_time) VALUES
+(1, 1, 2, '10:00', '11:00'),
+(2, 2, 1, '10:00', '11:00'),
+(3, 3, 4, '08:30', '09:45'),
+(4, 4, 3, '12:15', '13:30'),
+(5, 5, 6, '09:00', '10:30'),
+(6, 6, 5, '11:45', '13:15'),
+(7, 1, 3, '14:00', '15:15'),
+(8, 3, 1, '15:30', '16:45'),
+(9, 2, 5, '13:00', '14:30'),
+(10, 5, 2, '16:00', '17:30'),
+(11, 7, 8, '09:00', '10:15'),
+(12, 9, 10, '11:00', '12:15'),
+(13, 11, 12, '13:00', '14:15'),
+(14, 13, 14, '15:00', '16:15'),
+(15, 15, 1, '17:00', '18:15');
 
--- De navigatie-instructies voor Rotterdam
-INSERT INTO navigation_steps (id, station_id, step_number, instruction_text, environment_description, distance_meters) VALUES
-(6, 2, 1, 'Verlaat perron 3 via de lift', 'Liftdeuren met audiosignaal', 5),
-(7, 2, 2, 'Loop rechtdoor naar centrale hal', 'Echo van grote ruimte', 15),
-(8, 2, 3, 'Volg geribbelde lijn naar noorduitgang', 'Geluid van toegangspoortjes', 20);
+INSERT INTO schedules (id, route_id, platform_id, date, status) VALUES
+(1, 1, 1, '2024-12-25', 'Op tijd'),
+(2, 2, 2, '2024-12-25', 'Op tijd'),
+(3, 3, 3, '2024-12-25', 'Op tijd'),
+(4, 4, 4, '2024-12-25', 'Op tijd'),
+(5, 5, 5, '2024-12-25', 'Op tijd'),
+(6, 6, 6, '2024-12-25', 'Op tijd'),
+(7, 7, 1, '2024-12-25', 'Op tijd'),
+(8, 8, 3, '2024-12-25', 'Op tijd'),
+(9, 9, 2, '2024-12-25', 'Op tijd'),
+(10, 10, 5, '2024-12-25', 'Op tijd'),
+(11, 11, 7, '2024-12-25', 'Op tijd'),
+(12, 12, 9, '2024-12-25', 'Op tijd'),
+(13, 13, 11, '2024-12-25', 'Op tijd'),
+(14, 14, 13, '2024-12-25', 'Op tijd'),
+(15, 15, 15, '2024-12-25', 'Op tijd');

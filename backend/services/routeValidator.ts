@@ -19,11 +19,9 @@ export class ValidationError extends Error {
 }
 
 /**
- * Validates a route request by checking for required fields and business rules
- * 
- * @param request - The route request object to validate
- * @throws {ValidationError} When validation fails with specific error message
- */
+* Validates a route request by checking for required fields and business rules
+*/
+
 export function validateRouteRequest(request: RouteRequest): void {
     const { departureStation, arrivalStation } = request;
 

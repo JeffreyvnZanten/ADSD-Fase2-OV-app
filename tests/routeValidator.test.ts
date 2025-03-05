@@ -1,6 +1,6 @@
 // routeValidator.test.ts
 import { validateRouteRequest, ValidationError } from '../backend/services/routeValidator';
-import { RouteRequest } from '../backend/types';
+import { RouteRequest } from '../shared/types';
 
 // Test suite to check for valid routes
 describe('validateRouteRequest', () => {
@@ -10,12 +10,10 @@ describe('validateRouteRequest', () => {
           arrivalStation: 'Amsterdam'
       };
 
-      // Check if the function throws a ValidationError and a message
+      expect(() => validateRouteRequest(request)).toThrow(ValidationError);
       expect(() => validateRouteRequest(request)).toThrow(
         'Het vertrek- en aankomststation kunnen niet hetzelfde zijn'
-    );
-
-      
+      );
   });
 
   test('should throw ValidationError when departure station is missing', () => {
@@ -24,11 +22,11 @@ describe('validateRouteRequest', () => {
           arrivalStation: 'Rotterdam'
       };
 
+      expect(() => validateRouteRequest(request)).toThrow(ValidationError);
       expect(() => validateRouteRequest(request)).toThrow(
           'Selecteer eerst een vertrek- en aankomststation'
       );
   });
-
 
   test('should throw ValidationError when arrival station is missing', () => {
       const request: RouteRequest = {
@@ -36,9 +34,9 @@ describe('validateRouteRequest', () => {
           arrivalStation: ''
       };
 
+      expect(() => validateRouteRequest(request)).toThrow(ValidationError);
       expect(() => validateRouteRequest(request)).toThrow(
           'Selecteer eerst een vertrek- en aankomststation'
       );
   });
-
 });
