@@ -5,28 +5,14 @@
  * It provides a user interface for selecting stations and viewing travel routes,
  * with special focus on accessibility for visually impaired users.
  * 
- * Key Concepts:
- * - Custom Hooks: Uses useOvApp for state management
- * - Accessibility: Built-in screen reader support
- * - Component Composition: Combines multiple smaller components
- * - useRef & useEffect: For managing one-time audio introduction
- * 
- * Component Structure:
- * - Header
- * - Departure Station Selector
- * - Arrival Station Selector
- * - Action Buttons (Generate Route & Reset)
- * - Route Description (when available)
  */
 
 import React, { useState ,useRef, useEffect } from 'react';
 import useOvApp from './hooks/useOvApp'; 
 import StationSelector from './componenten/StationSelector';
-import RouteDescription from './componenten/RouteDescription';
-import { speak } from './hooks/useSpeak';
-import './styles/tab.css';
 import RouteDisplay from './componenten/RouteDisplay';
 import ErrorDisplay from './componenten/ErrorDisplay';
+import './styles/tab.css';
 
 /**
  * Main Application Component
@@ -39,6 +25,7 @@ import ErrorDisplay from './componenten/ErrorDisplay';
  * 3. Renders station selectors and route information
  * 4. Provides keyboard navigation support
  */
+
 function OVApp() {
     // Get all state and handlers from our custom hook
     const {
@@ -62,7 +49,7 @@ function OVApp() {
     // Play introduction audio once when component mounts
     useEffect(() => {
         if (!hasPlayedRef.current) {
-            speak(intro);
+            // speak(intro);
             hasPlayedRef.current = true;
         }
     }, []); // Empty dependency array means this runs once on mount
@@ -70,23 +57,23 @@ function OVApp() {
     return (
         <div className='box-1'>
             {/* Main application title */}
-            <h1   tabIndex={1} aria-label='"Deze website is geoptimaliseerd voor blinde mensen. Je kan het volgende element selecteren met de tab-toets en teruggaan met shift-tab.   Met enter selecteer je een element. En met f7 hoor je deze instructies opnieuw.";'>OV Stations Selector</h1>
-
+            <h1   tabIndex={1} aria-label='"Deze website is geoptimaliseerd voor blinde mensen. Je kan het volgende element selecteren met de tab-toets en teruggaan met shift-tab.  Met enter selecteer je een element";'>OV Stations Selector</h1>
+            <p  tabIndex={1}   aria-label="Waneer je het station aan het invoeren bent zal er een uitklap menu komen waar je met de pijltoesten door heen kan en met enter kan selecteren"></p>
             {/* Departure station dropdown */}
             <StationSelector
-                label="Vertrekstation"
+                label="Vertrekstation: voer hier je station in"
                 value={departureStation}
                 stations={stations}
-                onChange={handleDepartureChange}
+                onChange={handleDepartureChange} // Gebruik de aangepaste functie
                 tabindex={0}
             />
             
             {/* Arrival station dropdown */}
             <StationSelector
-                label="Aankomststation"
+                label="Aankomststation: voer hier je station in"
                 value={arrivalStation}
                 stations={stations}
-                onChange={handleArrivalChange}
+                onChange={handleArrivalChange} // Gebruik de aangepaste functie
                 tabindex={0}
             />
 
@@ -96,21 +83,27 @@ function OVApp() {
                 <button 
                     tabIndex={0} 
                     onClick={handleGetRoute}
+                    aria-label="Genereer route"
                 >
                     Genereer Route
                 </button>
-
-                {/* Reset form button */}
-                <button onClick={handleReset}>
-                    Reset
-                </button>
             </div>
 
-            {/* Conditional rendering of route information */}
-            {error && <ErrorDisplay message={error} />}
+            <table>
+                <tbody>
+                    {error && (
+                        <tr>
+                            <td  tabIndex={0}><ErrorDisplay message={error} /></td>
+                        </tr>
+                    )}
+                    {route && (
+                        <tr>
+                            <td tabIndex={0}><RouteDisplay route={route} /></td>
+                        </tr>
+                    )}
+                </tbody>
+            </table>
 
-            {/* Conditional rendering of route information */}
-            {route && <RouteDisplay route={route} />}
         </div>
     );
 }

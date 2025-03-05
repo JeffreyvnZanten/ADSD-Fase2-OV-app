@@ -1,63 +1,62 @@
-// repository/station.repository.ts
-import { Database } from 'sqlite3';
-import { Station } from './types';
-
-/**
- * Repository layer for database operations related to stations
- * Handles direct database queries and data access
- */
+import { databaseService } from './database';
+import { Station, navigation_step } from '../shared/types';
 
 export const ovRepository = {
-    /**
-     * Retrieves all stations from the database
-     * @param {Database} db - SQLite database connection
-     * @returns {Promise<Station[]>} Array of all stations
+     /**
+     * Retrieves all stations from the database.
+     * This function performs a full table scan of the stations table.
+     * 
+     * @returns A Promise that resolves to an array of Station objects.
+     *          Returns an empty array if no stations are found.
+     * 
+     * @example
+     * const stations = await stationRepository.getAllStations();
+     * console.log(stations); // [{id: 1, name: 'Central Station', ...}, ...]
      */
-    getAllStations: (db: Database): Promise<Station[]> =>
-        new Promise((resolve, reject) => {
-            db.all('SELECT * FROM stations', (err, rows) => {
-                if (err) reject(err);
-                resolve(rows as Station[]);
-            });
-        }),
+
+    getAllStations: async (): Promise<Station[]> => 
+        databaseService.query<Station>('SELECT * FROM stations'),
 
     /**
-     * Retrieves stations for a specific city
-     * @param {Database} db - SQLite database connection
-     * @param {string} city - City name to search for
-     * @returns {Promise<Station[]>} Array of matching stations
+     * Retrieves a station by its city name using a case-insensitive search.
+     * The city name is trimmed of whitespace before searching.
+     * 
+     * @param city - The name of the city to search for
+     * @returns A Promise that resolves to a Station object if found,
+     *          or null if no station exists in the specified city
+     * 
+     * @example
+     * const station = await stationRepository.getStationByCity('Amsterdam');
+     * if (station) {
+     *     console.log(station.name);
+     * }
      */
-    getStationByCity: async (db: Database, city: string): Promise<Station[]> =>
-        new Promise((resolve, reject) => {
-            db.all(
-                'SELECT * FROM stations WHERE LOWER(city) = LOWER(?)',
-                [city.trim()],
-                (err, rows) => {
-                    if (err) {
-                        console.error('Database error:', err);
-                        reject(err);
-                    }
-                    console.log(`Found stations for city ${city}:`, rows);
-                    resolve(rows as Station[]);
-                }
-            );
-        }),
+    
+    getStationByCity: async (city: string): Promise<Station | null> =>
+        databaseService.queryOne<Station>(
+            'SELECT * FROM stations WHERE LOWER(city) = LOWER(?)',
+            [city.trim()]
+        ),
+
+    // navigation steps is under contruction for now future use for showing the steps to the user
+    // getAllNavigationSteps: async (): Promise<navigation_step[]>=> 
+    //     databaseService.query('SELECT * FROM navigation_steps'),
 
     /**
-     * Retrieves a station by its code
-     * @param {Database} db - SQLite database connection
-     * @param {string} code - Station code to search for
-     * @returns {Promise<Station | null>} Matching station or null if not found
+     * Performs database search for stations
+     * @param query - Search text to match against city names
+     * @returns Matching stations from database
      */
-    getStationByCode: (db: Database, code: string): Promise<Station | null> =>
-        new Promise((resolve, reject) => {
-            db.get(
-                'SELECT * FROM stations WHERE LOWER(code) = LOWER(?)',
-                [code],
-                (err, row) => {
-                    if (err) reject(err);
-                    resolve(row as Station || null);
-                }
-            );
-        })
+    searchStations: async (query: string): Promise<Station[]> => {
+        const searchPattern = `%${query}%`;
+        
+        const result = databaseService.query<Station>(
+            `SELECT * FROM stations 
+             WHERE LOWER(city) LIKE LOWER(?) 
+             LIMIT 10`,
+            [searchPattern]
+        );
+
+        return result;
+    },
 };

@@ -1,7 +1,6 @@
 // api.ts
 import express, { Request, Response } from 'express';
-import { Database } from 'sqlite3';
-import { Station, Route, ApiError, RouteRequest } from './types';
+import { Station, Route, ApiError, RouteRequest } from '../shared/types';
 import { stationService } from './services/stationService';
 import { routeService } from './services/routeService';
 import { RouteNotFoundError } from './services/routeService';
@@ -9,24 +8,6 @@ import { ValidationError } from './services/routeValidator';
 
 /**
  * API Route Definitions
- * 
- * This file defines all REST API endpoints for the OV application.
- * It uses Express.js for routing and handles all HTTP requests.
- * 
- * Key Concepts:
- * - Express Router: Groups related routes together
- * - Async/Await: For handling asynchronous database operations
- * - Error Handling: Try-catch blocks for graceful error responses
- * - Type Safety: TypeScript interfaces for request/response types
- * 
- * API Structure:
- * - GET /stations: Retrieve all stations
- * - GET /stations/:city: Get stations for a specific city
- * - GET /route: Calculate route between two stations
- */
-
-/**
- * Creates and configures the Express router
  * 
  * @param {Database} db - SQLite database connection
  * @returns {express.Router} Configured Express router with all endpoints
@@ -36,7 +17,8 @@ import { ValidationError } from './services/routeValidator';
  * 2. Defines all API endpoints
  * 3. Implements error handling for each route
  */
-export const createApi = (db: Database) => {
+
+export const createApi = () => {
     const router = express.Router();
 
     /**
@@ -46,45 +28,11 @@ export const createApi = (db: Database) => {
      * Response:
      * - Success: Array of Station objects
      * - Error: ApiError object with status 500
-     * 
-     * Example Response:
-     * [
-     *   {
-     *     "id": 1,
-     *     "name": "Amsterdam Centraal",
-     *     "code": "AMS",
-     *     ...
-     *   }
-     * ]
      */
+
     router.get('/stations', async (_req: Request, res: Response<Station[] | ApiError>) => {
         try {
-            const stations = await stationService.getAllStations(db);
-            res.json(stations);
-        } catch (error) {
-            res.status(500).json({ error: 'Failed to fetch stations' });
-        }
-    });
-
-    /**
-     * GET /api/stations/:city
-     * Retrieves all stations for a specific city
-     * 
-     * URL Parameters:
-     * - city: Name of the city to search for
-     * 
-     * Response Codes:
-     * - 200: Stations found
-     * - 404: No stations found for city
-     * - 500: Server error
-     */
-    router.get('/stations/:city', async (req: Request, res: Response<Station[] | ApiError>) => {
-        try {
-            const stations = await stationService.getStationsByCity(db, req.params.city);
-            if (stations.length === 0) {
-                res.status(404).json({ error: 'No stations found for this city' });
-                return;
-            }
+            const stations = await stationService.getAllStations();
             res.json(stations);
         } catch (error) {
             res.status(500).json({ error: 'Failed to fetch stations' });
@@ -106,8 +54,9 @@ export const createApi = (db: Database) => {
      * - 500: Server error
      * 
      * Example Request:
-     * GET /api/route?departureStation=Amsterdam&arrivalStation=Rotterdam
+     * GET localhost:4010/api/route?departureStation=Amsterdam&arrivalStation=Rotterdam
      */
+    
     router.get('/route', async (
         req: Request<{}, {}, {}, RouteRequest>, 
         res: Response<Route | ApiError>
@@ -115,13 +64,12 @@ export const createApi = (db: Database) => {
         const { departureStation, arrivalStation } = req.query;
     
         try {
-            const route = await routeService.calculateRoute(db, {
+            const route = await routeService.calculateRoute({
                 departureStation,
                 arrivalStation
             });
             res.json(route);
         } catch (error) {
-            // Map domain errors to HTTP responses
             if (error instanceof ValidationError) {
                 res.status(400).json({ error: error.message });
                 return;
@@ -131,6 +79,41 @@ export const createApi = (db: Database) => {
                 return;
             }
             res.status(500).json({ error: 'Er is een fout opgetreden bij het berekenen van de route' });
+        }
+    });
+
+     /**
+     * GET /api/stations/search 
+     * Searches stations based on query
+     * 
+     * @param query - The query (2 characters minimum)
+     * @returns Filtered list of stations
+     */
+     router.get('/stations/search', async (req: Request, res: Response<Station[] | { error: string }>) => {
+        try {
+            // Get the query parameter from the request object
+            const query = req.query.query as string;
+            
+            // inject the logging to see what we receive
+            console.log("Ontvangen zoekquery:", query);
+    
+            // cheks if there is a query
+            if (!query) {
+                return res.status(400).json({ error: 'Geen zoekterm opgegeven' });
+            }
+    
+            // looks for stations based on the query
+            const stations = await stationService.searchStations(query);
+            
+            // shows the result in the console 
+            console.log("Gevonden stations:", stations);
+    
+            // Send the result back as an array of stations
+            return res.json(stations);
+        } catch (error) {
+            console.error("Error tijdens zoeken:", error);
+            // sends an error object back
+            return res.status(500).json({ error: 'Er is een fout opgetreden tijdens het zoeken' });
         }
     });
 

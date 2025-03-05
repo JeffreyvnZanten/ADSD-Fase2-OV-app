@@ -1,6 +1,6 @@
 // services/station.service.ts
-import { Database } from 'sqlite3';
-import { Station } from '../types';
+
+import { Station } from '../../shared/types';
 import { ovRepository } from '../ovRepository';
 
 /**
@@ -11,20 +11,19 @@ import { ovRepository } from '../ovRepository';
 export const stationService = {
     /**
      * Retrieves all stations from the database
-     * @param {Database} db - SQLite database connection
      * @returns {Promise<Station[]>} Array of all stations
      */
-    getAllStations: async (db: Database): Promise<Station[]> => {
-        return ovRepository.getAllStations(db);
-    },
+    getAllStations: async (): Promise<Station[]> => 
+        ovRepository.getAllStations(),
 
     /**
-     * Retrieves stations for a specific city
-     * @param {Database} db - SQLite database connection
-     * @param {string} city - City name to search for
-     * @returns {Promise<Station[]>} Array of stations in the specified city
+     * Searches stations based on input text
+     * @param query - Search text to filter stations
+     * @returns Filtered list of stations
      */
-    getStationsByCity: async (db: Database, city: string): Promise<Station[]> => {
-        return ovRepository.getStationByCity(db, city);
+    searchStations: async (query: string): Promise<Station[]> => {
+        const callback = ovRepository.searchStations(query);
+
+        return callback;
     }
 };

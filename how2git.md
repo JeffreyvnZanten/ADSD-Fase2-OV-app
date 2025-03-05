@@ -1,1 +1,0 @@
-# this is a brief git documentation for the ADSD-FASE2-OV-APP
