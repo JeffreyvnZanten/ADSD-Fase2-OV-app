@@ -72,6 +72,7 @@ const isTableEmpty = async (tableName: string): Promise<boolean> => {
     return result?.count === 0;
 };
 
+// Returns all table names in the database
 const getAllTableNames = async (): Promise<string[]> => {
     if (!database) throw new Error('Database not initialized');
     
@@ -80,8 +81,8 @@ const getAllTableNames = async (): Promise<string[]> => {
     );
     
     return tables.map(table => table.name);
-
 };
+
 // This function will check if all tables are empty
 const areAllTablesEmpty = async (): Promise<boolean> => {
     const tableNames = await getAllTableNames();
@@ -120,7 +121,6 @@ const setupSchema = async (): Promise<void> => {
         }
     }
 };
-
 
 // The query function takes an sql query string and an optional array of parameters using generics to define the return type
 const query = async <T>(sql: string, params: any[] = []): Promise<T[]> => {

@@ -13,31 +13,21 @@ import StationSelector from './componenten/StationSelector';
 import RouteDisplay from './componenten/RouteDisplay';
 import ErrorDisplay from './componenten/ErrorDisplay';
 import './styles/tab.css';
+import DateAndTime from './componenten/DateAndTIme';
 
-/**
- * Main Application Component
- * 
- * @returns {JSX.Element} The complete OV application interface
- * 
- * Implementation Details:
- * 1. Uses useOvApp hook for all state management and handlers
- * 2. Plays introduction audio for first-time visitors
- * 3. Renders station selectors and route information
- * 4. Provides keyboard navigation support
- */
-
+// Main Application Component
 function OVApp() {
     // Get all state and handlers from our custom hook
     const {
-        stations,          // List of all available stations
-        departureStation,  // Currently selected departure station
-        arrivalStation,   // Currently selected arrival station
-        route,            // Current route (if calculated)
+        stations,          
+        departureStation,  
+        arrivalStation,   
+        route,           
         error,
-        handleDepartureChange,  // Handler for departure selection
-        handleArrivalChange,    // Handler for arrival selection
-        handleGetRoute,         // Handler for route generation
-        handleReset            // Handler for form reset
+        handleDepartureChange,  
+        handleArrivalChange,    
+        handleGetRoute,         
+        handleReset            
     } = useOvApp(); 
     
     // Ref to track if intro audio has been played
@@ -49,7 +39,6 @@ function OVApp() {
     // Play introduction audio once when component mounts
     useEffect(() => {
         if (!hasPlayedRef.current) {
-            // speak(intro);
             hasPlayedRef.current = true;
         }
     }, []); // Empty dependency array means this runs once on mount
@@ -64,7 +53,7 @@ function OVApp() {
                 label="Vertrekstation: voer hier je station in"
                 value={departureStation}
                 stations={stations}
-                onChange={handleDepartureChange} // Gebruik de aangepaste functie
+                onChange={handleDepartureChange} 
                 tabindex={0}
             />
             
@@ -73,8 +62,14 @@ function OVApp() {
                 label="Aankomststation: voer hier je station in"
                 value={arrivalStation}
                 stations={stations}
-                onChange={handleArrivalChange} // Gebruik de aangepaste functie
+                onChange={handleArrivalChange}
                 tabindex={0}
+            />
+
+            <DateAndTime 
+                onDateTimeChange={(date) => {
+                    console.log("Selected date:", date);
+                }} 
             />
 
             {/* Action buttons container */}

@@ -1,6 +1,6 @@
 // index.ts
 import express from 'express';
-import { createApi } from './api';
+import { api } from './api';
 import cors from 'cors';
 import { databaseService } from './database';
 
@@ -18,12 +18,14 @@ const startApplicationServer = async () => {
         // Initialize database connection and schema
         await databaseService.initialize();
         
-        // Configure middleware
+        // This enables safe cross-domain requests by allowing only approved sites to retrieve data.
         app.use(cors());
+
+        // This starts the express server and allows it to parse JSON requests.
         app.use(express.json());
         
         // Set up API routes
-        app.use('/api', createApi());
+        app.use('/api', api());
         
         // Start HTTP server
         const serverPort = process.env.PORT || 4010;

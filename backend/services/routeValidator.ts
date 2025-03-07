@@ -6,7 +6,6 @@ import { RouteRequest, Station } from '../../shared/types';
  * Custom error class for route validation failures
  * Extends the standard Error class to provide validation-specific error handling
  */
-
 export class ValidationError extends Error {
     /**
      * Creates a new ValidationError instance

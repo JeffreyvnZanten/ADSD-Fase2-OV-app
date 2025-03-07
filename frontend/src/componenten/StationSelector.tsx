@@ -1,32 +1,7 @@
-/**
- * Station Selection Component
- * 
- * This component creates a dropdown menu for selecting train stations.
- * It's used for both departure and arrival station selection.
- * 
- * Key Concepts:
- * - Props: Properties passed to the component to configure its behavior
- * - Event Handling: Managing user interactions with the dropdown
- * - Accessibility: Support for keyboard navigation and screen readers
- * 
- * Example Usage:
- * <StationSelector
- *   label="Departure Station"
- *   value={selectedStation}
- *   stations={availableStations}
- *   onChange={handleQueryFilter}
- *   tabindex={1}
- * />
- */
-
 import React, { useState } from 'react';
 import { Station } from '../../../shared/types';
 import { API_BASE_URL } from '../constants/urls';
 
-/**
- * Props Interface
- * Defines the properties that must be passed to this component
- */
 interface StationSelectorProps {
     /** Text label shown above the dropdown (e.g., "Departure Station") */
     label: string;
@@ -40,20 +15,7 @@ interface StationSelectorProps {
     tabindex: number;
 }
 
-/**
- * Station Selection Component
- * 
- * @param props - Component properties (see StationSelectorProps interface)
- * @returns A styled dropdown menu for station selection
- * 
- * Implementation Details:
- * 1. Creates a wrapper div with 'downunder' class for styling
- * 2. Includes a label for screen readers and visual users
- * 3. Renders a select element with:
- *    - Default "Select station" option
- *    - List of all available stations
- * 4. Handles keyboard navigation via tabIndex
- */
+// This component is used to select a station based on the user's input
 export default function StationSelector({ 
     label, 
     value, 

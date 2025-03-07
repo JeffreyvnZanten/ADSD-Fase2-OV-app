@@ -9,7 +9,6 @@ import { API_BASE_URL } from '../constants/urls';
 
 /**
  * Hook for managing OV application state and operations
- * @returns {Object} Object containing state and handler functions
  */
 function useOvApp() {
     // State for storing all available stations 
@@ -42,34 +41,22 @@ function useOvApp() {
 
     /**
      * Handles departure station selection change
-     * @param {Event} event - Change event from select element
      */
     function handleDepartureChange(event: { target: { value: string } }) {
         const selectedCity = event.target.value;
         setDepartureStation(selectedCity);
-        //speak(`Vertrekstation is ingesteld op ${selectedCity}`);
     }
     
     /**
      * Handles arrival station selection change
-     * @param {Event} event - Change event from select element
      */
     function handleArrivalChange(event: { target: { value: string } }) {
         const selectedCity = event.target.value;
         setArrivalStation(selectedCity);
-        //speak(`Aankomststation is ingesteld op ${selectedCity}`);
     }
 
     /**
      * Fetches a route between selected stations and updates application state
-     * 
-     * Makes an API call to retrieve route information based on departure and arrival stations.
-     * Handles success by updating route state and error cases by setting appropriate error messages.
-     * 
-     * @async
-     * @function handleGetRoute
-     * @throws {Error} When API request fails or returns an error response
-     * 
      */
     const handleGetRoute = async () => {
         setError(null);

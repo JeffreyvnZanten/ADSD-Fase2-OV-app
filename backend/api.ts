@@ -7,24 +7,14 @@ import { RouteNotFoundError } from './services/routeService';
 import { ValidationError } from './services/routeValidator';
 
 /**
- * API Route Definitions
- * 
- * Implementation Details:
- * 1. Creates new Express router instance
- * 2. Defines all API endpoints
- * 3. Implements error handling for each route
+* Creates an Express router with all API endpoints
  */
 
-export const createApi = () => {
+export const api = () => {
     const router = express.Router();
 
     /**
-     * GET /api/stations
      * Retrieves all available train stations
-     * 
-     * Response:
-     * - Success: Array of Station objects
-     * - Error: ApiError object with status 500
      */
 
     router.get('/stations', async (_req: Request, res: Response<Station[] | ApiError>) => {
@@ -37,17 +27,7 @@ export const createApi = () => {
     });
 
     /**
-     * GET /api/route
-     * Calculates a route between two stations
-     * 
-     * Response Codes:
-     * - 200: Route calculated successfully
-     * - 400: Missing required parameters
-     * - 404: Route not found
-     * - 500: Server error
-     * 
-     * Example Request:
-     * GET localhost:4010/api/route?departureStation=Amsterdam&arrivalStation=Rotterdam
+     * Check if a route between two stations is possible and return the route or an error
      */
     
     router.get('/route', async (
@@ -76,7 +56,6 @@ export const createApi = () => {
     });
 
      /**
-     * GET /api/stations/search 
      * Searches stations based on query
      */
      router.get('/stations/search', async (req: Request, res: Response<Station[] | { error: string }>) => {
@@ -84,7 +63,6 @@ export const createApi = () => {
             // Get the query parameter from the request object
             const query = req.query.query as string;
             
-            // inject the logging to see what we receive
             console.log("Ontvangen zoekquery:", query);
     
             // cheks if there is a query
@@ -94,8 +72,6 @@ export const createApi = () => {
     
             // looks for stations based on the query
             const stations = await stationService.searchStations(query);
-            
-            // shows the result in the console 
             console.log("Gevonden stations:", stations);
     
             // Send the result back as an array of stations

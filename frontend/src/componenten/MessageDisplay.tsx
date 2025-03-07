@@ -7,10 +7,12 @@ interface MessageDisplayProps {
     type?: 'error' | 'default' | 'route';
 }
 
+// Normalize the content to always be an array
 const normalizeContent = (content: string | string[]): string[] => {
     return Array.isArray(content) ? content : [content];
 };
 
+// This component is used to display messages to the user.
 export default function MessageDisplay({ 
     title, 
     content, 

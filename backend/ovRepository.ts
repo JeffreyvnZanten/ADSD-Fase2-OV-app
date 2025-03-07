@@ -1,6 +1,8 @@
 import { databaseService } from './database';
 import { Station } from '../shared/types';
 
+// Creates a repository object that contains functions to interact with the database.
+
 export const ovRepository = {
      /**
      * Retrieves all stations from the database.
