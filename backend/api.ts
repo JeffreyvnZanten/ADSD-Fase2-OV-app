@@ -5,6 +5,7 @@ import { stationService } from './services/stationService';
 import { routeService } from './services/routeService';
 import { RouteNotFoundError } from './services/routeService';
 import { ValidationError } from './services/routeValidator';
+import { ovRepository } from './ovRepository';
 
 /**
 * Creates an Express router with all API endpoints
@@ -41,6 +42,7 @@ export const api = () => {
                 departureStation,
                 arrivalStation
             });
+            ovRepository.getAllSchedulesByDate("2025-03-10");
             res.json(route);
         } catch (error) {
             if (error instanceof ValidationError) {

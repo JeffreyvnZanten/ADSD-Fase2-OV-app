@@ -4,7 +4,6 @@ import { api } from './api';
 import cors from 'cors';
 import { databaseService } from './database';
 
-
 /**
  * Initializes and starts the application server.
  * Coordinates the startup sequence including database setup,

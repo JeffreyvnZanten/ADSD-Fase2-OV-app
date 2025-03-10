@@ -39,4 +39,20 @@ export const ovRepository = {
 
         return result;
     },
+
+    // Retrieve all routes based on schedule
+    getAllSchedulesByDate: async (date: string): Promise<any[]> => {
+        let result = await databaseService.query('SELECT * FROM schedules WHERE date = ?', [date]);
+
+        // log here otherwise it doesnt show since we use promise and await
+        console.log(result);
+
+        return result;
+    },
+
+    getRoute: async (): Promise<any[]> => {
+        let result = await databaseService.query( 'SELECT * FROM routes');
+
+        return result;
+    }
 };
