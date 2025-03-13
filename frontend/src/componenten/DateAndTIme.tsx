@@ -12,11 +12,16 @@ interface DateAndTimeProps {
   availableDates: AvailableDateTime[]; // Add this prop to receive available dates
 }
 
-const DateAndTime: React.FC<DateAndTimeProps> = ({ onDateTimeChange, availableDates }) => {
+const DateAndTime: React.FC<DateAndTimeProps> = ({
+  onDateTimeChange,
+  availableDates,
+}) => {
   const today = new Date();
   const formattedToday = today.toISOString().slice(0, 16);
-  
-  const [selectedDateTime, setSelectedDateTime] = useState<string>(formattedToday);
+
+  const [selectedDateTime, setSelectedDateTime] = useState<string>(
+    "2025-03-11T11:00:00"
+  );
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   // Debug: Print available dates when component mounts
@@ -28,9 +33,9 @@ const DateAndTime: React.FC<DateAndTimeProps> = ({ onDateTimeChange, availableDa
   const isDateAvailable = (dateToCheck: string): boolean => {
     // Debug: Log the date we're checking
     console.log("Checking availability for:", dateToCheck);
-    
-    return availableDates.some(date => 
-      date.dateTime.slice(0, 16) === dateToCheck && date.isAvailable
+
+    return availableDates.some(
+      (date) => date.dateTime.slice(0, 16) === dateToCheck && date.isAvailable
     );
   };
 
@@ -43,7 +48,7 @@ const DateAndTime: React.FC<DateAndTimeProps> = ({ onDateTimeChange, availableDa
       console.log("Date is available! Updating...");
       setSelectedDateTime(newValue);
       setErrorMessage("");
-      
+
       if (onDateTimeChange) {
         onDateTimeChange(new Date(newValue));
       }
@@ -54,45 +59,52 @@ const DateAndTime: React.FC<DateAndTimeProps> = ({ onDateTimeChange, availableDa
   };
 
   return (
-    <div style={{ 
-      padding: '15px', 
-      border: '1px solid #ccc',
-      borderRadius: '5px',
-      backgroundColor: '#f9f9f9'
-    }}>
-      <label htmlFor="datetime-picker" style={{ display: 'block', marginBottom: '10px' }}>
-        Pick your travel date and time: 
+    <div
+      style={{
+        padding: "15px",
+        border: "1px solid #ccc",
+        borderRadius: "5px",
+        backgroundColor: "#f9f9f9",
+      }}
+    >
+      <label
+        htmlFor="datetime-picker"
+        style={{ display: "block", marginBottom: "10px" }}
+      >
+        Pick your travel date and time:
       </label>
       <input
         id="datetime-picker"
         type="datetime-local"
         value={selectedDateTime}
         onChange={handleChange}
-        style={{ 
-          padding: '8px',
-          border: '2px solid #ddd',
-          borderRadius: '4px',
-          width: '100%'
+        style={{
+          padding: "8px",
+          border: "2px solid #ddd",
+          borderRadius: "4px",
+          width: "100%",
         }}
       />
       {errorMessage && (
-        <div style={{ 
-          color: 'red', 
-          marginTop: '10px',
-          fontSize: '14px'
-        }}>
+        <div
+          style={{
+            color: "red",
+            marginTop: "10px",
+            fontSize: "14px",
+          }}
+        >
           {errorMessage}
         </div>
       )}
-      
+
       {/* Show available dates for debugging */}
-      <div style={{ marginTop: '10px', fontSize: '12px', color: '#666' }}>
+      <div style={{ marginTop: "10px", fontSize: "12px", color: "#666" }}>
         Available dates for testing:
         <ul>
-          {availableDates.map(date => (
+          {availableDates.map((date) => (
             <li key={date.id}>
-              {new Date(date.dateTime).toLocaleString()} 
-              {date.isAvailable ? ' ✅' : ' ❌'}
+              {new Date(date.dateTime).toLocaleString()}
+              {date.isAvailable ? " ✅" : " ❌"}
             </li>
           ))}
         </ul>
@@ -102,4 +114,3 @@ const DateAndTime: React.FC<DateAndTimeProps> = ({ onDateTimeChange, availableDa
 };
 
 export default DateAndTime;
-
